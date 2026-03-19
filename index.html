@@ -523,7 +523,7 @@
 
   <div id="saveForm">
     <label>Data do jogo</label>
-    <input type="date" id="saveDate">
+    <input type="date" id="saveDate" lang="pt-BR">
     <label>Descrição (opcional)</label>
     <input type="text" id="saveLabel" placeholder="ex: Bandeirantes — Turma A">
     <label>URL do jogo (opcional)</label>
@@ -853,7 +853,12 @@ function matchCard(m) {
 }
 
 function toggleMatchSection(id, section) {
-  document.getElementById(section + '-' + id).classList.toggle('open');
+  const el = document.getElementById(section + '-' + id);
+  const isOpening = !el.classList.contains('open');
+  if (section === 'video' && isOpening) {
+    document.querySelectorAll('[id^="video-"]').forEach(v => v.classList.remove('open'));
+  }
+  el.classList.toggle('open');
 }
 
 function toggleEditForm(id) {
