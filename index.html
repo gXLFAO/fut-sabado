@@ -376,6 +376,22 @@
     .match-section.open { display: block; }
     .match-section .rankings-grid { margin: 16px 0 0; }
 
+    .video-wrapper {
+      position: relative;
+      padding-top: 56.25%;
+      margin-top: 14px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+
     .highlights-header {
       font-size: 0.82rem;
       font-weight: 700;
@@ -779,8 +795,11 @@ function matchCard(m) {
   const grids  = rankCard('⚽', 'Artilharia',           sorted.byGoals,         p => p.goals,         'bar-goals')
                + rankCard('🎯', 'Assistências',         sorted.byAssists,       p => p.assists,       'bar-assists')
                + rankCard('🏆', 'Participação em Gols', sorted.byParticipation, p => p.participation, 'bar-participation', p => `${p.goals}G+${p.assists}A`);
+  const embedUrl = getGoogleDriveEmbedUrl(m.videoUrl);
   const videoBtn = m.videoUrl
-    ? `<a class="btn btn-green" href="${escHtml(m.videoUrl)}" target="_blank" rel="noopener" style="padding:7px 12px;font-size:0.82rem;text-decoration:none;border-radius:8px;font-weight:600;display:inline-flex;align-items:center;gap:6px">▶ Assistir jogo</a>`
+    ? embedUrl
+      ? `<button class="btn-green" style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','video')">▶ Assistir jogo</button>`
+      : `<a class="btn btn-green" href="${escHtml(m.videoUrl)}" target="_blank" rel="noopener" style="padding:7px 12px;font-size:0.82rem;text-decoration:none;border-radius:8px;font-weight:600;display:inline-flex;align-items:center;gap:6px">▶ Assistir jogo</a>`
     : '';
   const deleteBtn = isAdmin
     ? `<button class="btn-danger" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" onclick="deleteMatchById('${m.id}')">🗑</button>`
@@ -815,6 +834,7 @@ function matchCard(m) {
         <div class="highlights-header">📋 Destaques do jogo</div>
         <pre class="log-display">${logLines}</pre>
       </div>
+      ${embedUrl ? `<div class="match-section" id="video-${m.id}"><div class="video-wrapper"><iframe src="${embedUrl}" allowfullscreen allow="autoplay"></iframe></div></div>` : ''}
       <div class="match-edit-form" id="editForm-${m.id}">
         <div>
           <label>Título</label>
@@ -1043,6 +1063,16 @@ async function buildExcel({ title, subtitle, players, totalGoals, totalAssists, 
   const a      = document.createElement('a');
   a.href=url; a.download=filename; a.click();
   URL.revokeObjectURL(url);
+}
+
+// ── Google Drive embed helper ─────────────────────────────────────
+function getGoogleDriveEmbedUrl(url) {
+  if (!url) return null;
+  const m1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m1) return `https://drive.google.com/file/d/${m1[1]}/preview`;
+  const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m2) return `https://drive.google.com/file/d/${m2[1]}/preview`;
+  return null;
 }
 
 // ── Utilities ─────────────────────────────────────────────────────
