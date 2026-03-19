@@ -769,11 +769,13 @@ function confirmSave() {
   const labelVal = document.getElementById('saveLabel').value.trim();
   const videoUrl = document.getElementById('saveVideoUrl').value.trim();
   if (!dateVal) { showAlert('novaError', 'Selecione a data do jogo.'); return; }
-  const dateObj   = new Date(dateVal + 'T12:00:00');
+  const [d, mo, y] = dateVal.split('/');
+  const isoDate = `${y}-${mo}-${d}`;
+  const dateObj = new Date(`${isoDate}T12:00:00`);
   const rawFormatted = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
   const formatted = rawFormatted.charAt(0).toUpperCase() + rawFormatted.slice(1);
   addMatch({
-    id: Date.now().toString(), date: dateVal,
+    id: Date.now().toString(), date: isoDate,
     label: labelVal || formatted, formatted,
     log: currentData.log, totalGoals: currentData.totalGoals,
     totalAssists: currentData.totalAssists, players: currentData.players, ownGoals: currentData.ownGoals,
@@ -1103,9 +1105,7 @@ document.getElementById('logInput').addEventListener('keydown', e => { if (e.key
 
 // ── Date picker ───────────────────────────────────────────────────
 const saveDatePicker = flatpickr('#saveDate', {
-  dateFormat:    'Y-m-d',
-  altInput:      true,
-  altFormat:     'd/m/Y',
+  dateFormat:    'd/m/Y',
   locale:        'pt',
   disableMobile: true,
 });
