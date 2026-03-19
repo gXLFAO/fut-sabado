@@ -9,6 +9,11 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
+  <!-- Flatpickr date picker -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -523,7 +528,7 @@
 
   <div id="saveForm">
     <label>Data do jogo</label>
-    <input type="date" id="saveDate" lang="pt-BR">
+    <input type="text" id="saveDate" placeholder="DD/MM/AAAA" readonly>
     <label>Descrição (opcional)</label>
     <input type="text" id="saveLabel" placeholder="ex: Bandeirantes — Turma A">
     <label>URL do jogo (opcional)</label>
@@ -749,7 +754,7 @@ function lastSaturday() {
 }
 
 function showSaveForm() {
-  document.getElementById('saveDate').value     = lastSaturday();
+  saveDatePicker.setDate(lastSaturday(), false);
   document.getElementById('saveLabel').value    = '';
   document.getElementById('saveVideoUrl').value = '';
   document.getElementById('saveForm').style.display = 'block';
@@ -1095,6 +1100,15 @@ function clearAll() {
 }
 
 document.getElementById('logInput').addEventListener('keydown', e => { if (e.key==='Enter' && e.ctrlKey) calculate(); });
+
+// ── Date picker ───────────────────────────────────────────────────
+const saveDatePicker = flatpickr('#saveDate', {
+  dateFormat:    'Y-m-d',
+  altInput:      true,
+  altFormat:     'd/m/Y',
+  locale:        'pt',
+  disableMobile: true,
+});
 </script>
 </body>
 </html>
