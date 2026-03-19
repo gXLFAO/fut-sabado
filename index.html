@@ -216,6 +216,10 @@
     .btn-danger:hover:not(:disabled) { background: #3a1c1c; }
     .btn-yellow    { background: #2a2005; color: #f59e0b; border: 1px solid #6b4e00; }
     .btn-yellow:hover:not(:disabled) { background: #332808; }
+    .btn-purple      { background: #2d1f50; color: #c4b5fd; border: 1px solid #5b3fa0; }
+    .btn-purple:hover:not(:disabled) { background: #38276a; }
+    .btn-blue-light  { background: #0c2e4a; color: #93c5fd; border: 1px solid #1e5a80; }
+    .btn-blue-light:hover:not(:disabled) { background: #103858; }
 
     /* ── Save form ── */
     #saveForm {
@@ -401,6 +405,41 @@
 
     .geral-empty { text-align: center; padding: 48px 20px; color: #475569; }
     .geral-empty .big { font-size: 2.5rem; margin-bottom: 12px; }
+
+    /* ── Edit form inside match card ── */
+    .match-edit-form {
+      display: none;
+      padding: 14px 18px 18px;
+      border-top: 1px solid #2a3f55;
+      gap: 10px;
+      flex-direction: column;
+    }
+
+    .match-edit-form.open { display: flex; }
+
+    .match-edit-form label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .match-edit-form input {
+      width: 100%;
+      background: #0a1520;
+      border: 1px solid #2a3f55;
+      border-radius: 7px;
+      color: #e8edf2;
+      font-size: 0.9rem;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .match-edit-form input:focus { border-color: #4ade80; }
 
     /* ── Loading state ── */
     .db-loading { text-align: center; padding: 48px 20px; color: #475569; font-size: 0.92rem; }
@@ -744,7 +783,10 @@ function matchCard(m) {
     ? `<a class="btn btn-green" href="${escHtml(m.videoUrl)}" target="_blank" rel="noopener" style="padding:7px 12px;font-size:0.82rem;text-decoration:none;border-radius:8px;font-weight:600;display:inline-flex;align-items:center;gap:6px">▶ Assistir jogo</a>`
     : '';
   const deleteBtn = isAdmin
-    ? `<button class="btn-danger" style="padding:7px 12px;font-size:0.82rem" onclick="deleteMatchById('${m.id}')">🗑</button>`
+    ? `<button class="btn-danger" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" onclick="deleteMatchById('${m.id}')">🗑</button>`
+    : '';
+  const editBtn = isAdmin
+    ? `<button class="btn-purple" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" onclick="toggleEditForm('${m.id}')">✏️</button>`
     : '';
   const logLines = (m.log || '').split('\n').map(l => escHtml(l)).join('\n');
   return `
@@ -761,6 +803,7 @@ function matchCard(m) {
           <button class="btn-yellow"    style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','rankings')">▼ Rankings</button>
           <button class="btn-blue"      style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','highlights')">📋 Destaques</button>
           <button class="btn-secondary" style="padding:7px 12px;font-size:0.82rem" onclick="exportMatch('${m.id}')">📥 Excel</button>
+          ${editBtn}
           ${deleteBtn}
         </div>
       </div>
@@ -772,11 +815,37 @@ function matchCard(m) {
         <div class="highlights-header">📋 Destaques do jogo</div>
         <pre class="log-display">${logLines}</pre>
       </div>
+      <div class="match-edit-form" id="editForm-${m.id}">
+        <div>
+          <label>Título</label>
+          <input type="text" id="editLabel-${m.id}" value="${escHtml(m.label)}">
+        </div>
+        <div>
+          <label>URL do jogo</label>
+          <input type="url" id="editUrl-${m.id}" value="${escHtml(m.videoUrl || '')}">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn-green" style="padding:7px 14px;font-size:0.85rem" onclick="confirmEdit('${m.id}')">✅ Salvar</button>
+          <button class="btn-secondary" style="padding:7px 14px;font-size:0.85rem" onclick="toggleEditForm('${m.id}')">Cancelar</button>
+        </div>
+      </div>
     </div>`;
 }
 
 function toggleMatchSection(id, section) {
   document.getElementById(section + '-' + id).classList.toggle('open');
+}
+
+function toggleEditForm(id) {
+  document.getElementById('editForm-' + id).classList.toggle('open');
+}
+
+function confirmEdit(id) {
+  const label    = document.getElementById('editLabel-' + id).value.trim();
+  const videoUrl = document.getElementById('editUrl-'   + id).value.trim();
+  if (!label) return;
+  matchesCol.doc(id).update({ label, videoUrl: videoUrl || null });
+  toggleEditForm(id);
 }
 
 function deleteMatchById(id) {
