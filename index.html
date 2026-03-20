@@ -763,7 +763,7 @@ function lastSaturday() {
 }
 
 function showSaveForm() {
-  saveDatePicker.setDate(lastSaturday(), false);
+  saveDatePicker.setDate(new Date(), false);
   document.getElementById('saveLabel').value     = '';
   document.getElementById('saveVideoUrl1').value = '';
   document.getElementById('saveVideoUrl2').value = '';
@@ -826,7 +826,7 @@ function matchCard(m) {
     ? `<button class="btn-danger" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" onclick="deleteMatchById('${m.id}')">🗑</button>`
     : '';
   const editBtn = isAdmin
-    ? `<button class="btn-purple" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" onclick="toggleEditForm('${m.id}')">✏️</button>`
+    ? `<button class="btn-blue-light" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" onclick="toggleEditForm('${m.id}')">✏️</button>`
     : '';
   const logLines = (m.log || '').split('\n').map(l => escHtml(l)).join('\n');
   return `
@@ -842,8 +842,8 @@ function matchCard(m) {
         </div>
         <div class="match-actions">
           ${videoBtn}
-          <button class="btn-yellow" style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','rankings')">▼ Rankings</button>
-          <button class="btn-blue"   style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','highlights')">📋 Destaques</button>
+          <button class="btn-yellow" style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','highlights')">📋 Destaques</button>
+          <button class="btn-purple" style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','rankings')">▼ Rankings</button>
           <div style="display:flex;gap:8px;margin-left:auto">
             <button class="btn-secondary" style="padding:7px 12px;font-size:0.82rem" onclick="exportMatch('${m.id}')">📥 Excel</button>
             ${editBtn}${deleteBtn}
