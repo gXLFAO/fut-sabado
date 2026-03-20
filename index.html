@@ -199,6 +199,7 @@
       border-radius: 8px;
       font-size: 0.9rem;
       font-weight: 600;
+      font-family: inherit;
       cursor: pointer;
       transition: opacity 0.15s, transform 0.1s;
       display: inline-flex;
@@ -362,8 +363,14 @@
 
     .match-card-header {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       padding: 14px 18px;
+      gap: 10px;
+    }
+
+    .match-card-top {
+      display: flex;
+      align-items: center;
       gap: 16px;
       flex-wrap: wrap;
     }
@@ -531,8 +538,10 @@
     <input type="text" id="saveDate" placeholder="DD/MM/AAAA" readonly>
     <label>Descrição (opcional)</label>
     <input type="text" id="saveLabel" placeholder="ex: Bandeirantes — Turma A">
-    <label>URL do jogo (opcional)</label>
-    <input type="url" id="saveVideoUrl" placeholder="ex: https://youtube.com/watch?v=...">
+    <label>URL Parte 1 (opcional)</label>
+    <input type="url" id="saveVideoUrl1" placeholder="ex: https://drive.google.com/...">
+    <label>URL Parte 2 (opcional)</label>
+    <input type="url" id="saveVideoUrl2" placeholder="ex: https://drive.google.com/...">
     <div class="btn-row" style="margin-top:14px">
       <button class="btn-green" onclick="confirmSave()">✅ Confirmar</button>
       <button class="btn-secondary" onclick="hideSaveForm()">Cancelar</button>
@@ -755,8 +764,9 @@ function lastSaturday() {
 
 function showSaveForm() {
   saveDatePicker.setDate(lastSaturday(), false);
-  document.getElementById('saveLabel').value    = '';
-  document.getElementById('saveVideoUrl').value = '';
+  document.getElementById('saveLabel').value     = '';
+  document.getElementById('saveVideoUrl1').value = '';
+  document.getElementById('saveVideoUrl2').value = '';
   document.getElementById('saveForm').style.display = 'block';
   document.getElementById('saveForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
@@ -767,7 +777,9 @@ function confirmSave() {
   if (!currentData) return;
   const dateVal  = document.getElementById('saveDate').value;
   const labelVal = document.getElementById('saveLabel').value.trim();
-  const videoUrl = document.getElementById('saveVideoUrl').value.trim();
+  const url1 = document.getElementById('saveVideoUrl1').value.trim();
+  const url2 = document.getElementById('saveVideoUrl2').value.trim();
+  const videoUrls = [url1, url2].filter(Boolean);
   if (!dateVal) { showAlert('novaError', 'Selecione a data do jogo.'); return; }
   const [d, mo, y] = dateVal.split('/');
   const isoDate = `${y}-${mo}-${d}`;
@@ -779,7 +791,7 @@ function confirmSave() {
     label: labelVal || formatted, formatted,
     log: currentData.log, totalGoals: currentData.totalGoals,
     totalAssists: currentData.totalAssists, players: currentData.players, ownGoals: currentData.ownGoals,
-    videoUrl: videoUrl || null,
+    videoUrls,
   });
   hideSaveForm();
   showAlert('novaSuccess', '✅ Jogo salvo com sucesso!');
@@ -802,12 +814,14 @@ function matchCard(m) {
   const grids  = rankCard('⚽', 'Artilharia',           sorted.byGoals,         p => p.goals,         'bar-goals')
                + rankCard('🎯', 'Assistências',         sorted.byAssists,       p => p.assists,       'bar-assists')
                + rankCard('🏆', 'Participação em Gols', sorted.byParticipation, p => p.participation, 'bar-participation', p => `${p.goals}G+${p.assists}A`);
-  const embedUrl = getGoogleDriveEmbedUrl(m.videoUrl);
-  const videoBtn = m.videoUrl
-    ? embedUrl
-      ? `<button class="btn-green" style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','video')">▶ Assistir jogo</button>`
-      : `<a class="btn btn-green" href="${escHtml(m.videoUrl)}" target="_blank" rel="noopener" style="padding:7px 12px;font-size:0.82rem;text-decoration:none;border-radius:8px;font-weight:600;display:inline-flex;align-items:center;gap:6px">▶ Assistir jogo</a>`
-    : '';
+  const videoUrls = m.videoUrls !== undefined ? m.videoUrls : (m.videoUrl ? [m.videoUrl] : []);
+  const videoBtn = videoUrls.map((url, i) => {
+    const embedUrl = getGoogleDriveEmbedUrl(url);
+    const label = videoUrls.length > 1 ? `▶ Parte ${i + 1}` : '▶ Assistir jogo';
+    return embedUrl
+      ? `<button class="btn-green" style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','video-${i}')">${label}</button>`
+      : `<a class="btn btn-green" href="${escHtml(url)}" target="_blank" rel="noopener" style="padding:7px 12px;font-size:0.82rem;text-decoration:none;border-radius:8px;font-weight:600;display:inline-flex;align-items:center;gap:6px">${label}</a>`;
+  }).join('');
   const deleteBtn = isAdmin
     ? `<button class="btn-danger" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" onclick="deleteMatchById('${m.id}')">🗑</button>`
     : '';
@@ -818,19 +832,22 @@ function matchCard(m) {
   return `
     <div class="match-card" id="match-${m.id}">
       <div class="match-card-header">
-        <div class="match-date">${escHtml(m.label)}</div>
-        <div class="match-meta">
-          <span class="meta-chip">⚽ <strong>${m.totalGoals}</strong> gols</span>
-          <span class="meta-chip">🎯 <strong>${m.totalAssists}</strong> assists</span>
-          <span class="meta-chip">👥 <strong>${m.players.length}</strong> jogadores</span>
+        <div class="match-card-top">
+          <div class="match-date">${escHtml(m.label)}</div>
+          <div class="match-meta">
+            <span class="meta-chip">⚽ <strong>${m.totalGoals}</strong> gols</span>
+            <span class="meta-chip">🎯 <strong>${m.totalAssists}</strong> assistências</span>
+            <span class="meta-chip">👥 <strong>${m.players.length}</strong> jogadores</span>
+          </div>
         </div>
         <div class="match-actions">
           ${videoBtn}
-          <button class="btn-yellow"    style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','rankings')">▼ Rankings</button>
-          <button class="btn-blue"      style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','highlights')">📋 Destaques</button>
-          <button class="btn-secondary" style="padding:7px 12px;font-size:0.82rem" onclick="exportMatch('${m.id}')">📥 Excel</button>
-          ${editBtn}
-          ${deleteBtn}
+          <button class="btn-yellow" style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','rankings')">▼ Rankings</button>
+          <button class="btn-blue"   style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','highlights')">📋 Destaques</button>
+          <div style="display:flex;gap:8px;margin-left:auto">
+            <button class="btn-secondary" style="padding:7px 12px;font-size:0.82rem" onclick="exportMatch('${m.id}')">📥 Excel</button>
+            ${editBtn}${deleteBtn}
+          </div>
         </div>
       </div>
       <div class="match-section" id="rankings-${m.id}">
@@ -841,15 +858,19 @@ function matchCard(m) {
         <div class="highlights-header">📋 Destaques do jogo</div>
         <pre class="log-display">${logLines}</pre>
       </div>
-      ${embedUrl ? `<div class="match-section" id="video-${m.id}"><div class="video-wrapper"><iframe src="${embedUrl}" allowfullscreen allow="autoplay"></iframe></div></div>` : ''}
+      ${videoUrls.map((url, i) => { const e = getGoogleDriveEmbedUrl(url); return e ? `<div class="match-section" id="video-${i}-${m.id}"><div class="video-wrapper"><iframe src="${e}" allowfullscreen allow="autoplay"></iframe></div></div>` : ''; }).join('')}
       <div class="match-edit-form" id="editForm-${m.id}">
         <div>
           <label>Título</label>
           <input type="text" id="editLabel-${m.id}" value="${escHtml(m.label)}">
         </div>
         <div>
-          <label>URL do jogo</label>
-          <input type="url" id="editUrl-${m.id}" value="${escHtml(m.videoUrl || '')}">
+          <label>URL Parte 1</label>
+          <input type="url" id="editUrl1-${m.id}" value="${escHtml(videoUrls[0] || '')}">
+        </div>
+        <div>
+          <label>URL Parte 2</label>
+          <input type="url" id="editUrl2-${m.id}" value="${escHtml(videoUrls[1] || '')}">
         </div>
         <div style="display:flex;gap:8px;margin-top:4px">
           <button class="btn-green" style="padding:7px 14px;font-size:0.85rem" onclick="confirmEdit('${m.id}')">✅ Salvar</button>
@@ -862,7 +883,7 @@ function matchCard(m) {
 function toggleMatchSection(id, section) {
   const el = document.getElementById(section + '-' + id);
   const isOpening = !el.classList.contains('open');
-  if (section === 'video' && isOpening) {
+  if (section.startsWith('video-') && isOpening) {
     document.querySelectorAll('[id^="video-"]').forEach(v => v.classList.remove('open'));
   }
   el.classList.toggle('open');
@@ -873,10 +894,12 @@ function toggleEditForm(id) {
 }
 
 function confirmEdit(id) {
-  const label    = document.getElementById('editLabel-' + id).value.trim();
-  const videoUrl = document.getElementById('editUrl-'   + id).value.trim();
+  const label = document.getElementById('editLabel-' + id).value.trim();
+  const url1  = document.getElementById('editUrl1-'  + id).value.trim();
+  const url2  = document.getElementById('editUrl2-'  + id).value.trim();
   if (!label) return;
-  matchesCol.doc(id).update({ label, videoUrl: videoUrl || null });
+  const videoUrls = [url1, url2].filter(Boolean);
+  matchesCol.doc(id).update({ label, videoUrls });
   toggleEditForm(id);
 }
 
@@ -1044,7 +1067,7 @@ async function buildExcel({ title, subtitle, players, totalGoals, totalAssists, 
   c(s0,1,subtitle,{ size:10,color:C.muted,bg:C.dark,align:'center',italic:true });
   const p0 = ws0.addRow([]); p0.height = 28;
   c(p0,1,`⚽ Gols: ${totalGoals}`,          { bold:true,size:11,color:C.green, bg:C.border,align:'center' });
-  c(p0,2,`🎯 Assists: ${totalAssists}`,     { bold:true,size:11,color:C.blue,  bg:C.border,align:'center' });
+  c(p0,2,`🎯 Assistências: ${totalAssists}`,     { bold:true,size:11,color:C.blue,  bg:C.border,align:'center' });
   c(p0,3,`👥 Jogadores: ${players.length}`, { bold:true,size:11,color:C.purple,bg:C.border,align:'center' });
   c(p0,4,'',{ bg:C.border });
   const g0 = ws0.addRow([]); g0.height = 10;
