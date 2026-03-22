@@ -578,7 +578,7 @@ const matchesCol = db.collection('matches');
 // ── In-memory cache (kept in sync by Firestore listener) ──────────
 let cachedMatches = [];
 
-matchesCol.orderBy('date', 'asc').onSnapshot(snap => {
+matchesCol.orderBy('id', 'desc').onSnapshot(snap => {
   cachedMatches = snap.docs.map(d => d.data());
   updateHistoricoBadge();
   if (document.getElementById('tab-historico').classList.contains('active')) renderHistorico();
@@ -800,7 +800,7 @@ function confirmSave() {
 
 // ── Histórico Jogos ───────────────────────────────────────────────
 function renderHistorico() {
-  const matches = loadMatches().slice().reverse();
+  const matches = loadMatches().slice();
   const el = document.getElementById('historicoContent');
   if (matches.length === 0) {
     el.innerHTML = `<div class="history-empty"><div class="big">📋</div><p>Nenhum jogo salvo ainda.${isAdmin ? '<br>Calcule os rankings e clique em <strong>Salvar Jogo</strong>.' : ''}</p></div>`;
