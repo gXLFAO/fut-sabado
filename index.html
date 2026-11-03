@@ -790,14 +790,14 @@ function updateAdminUi() {
 }
 
 function handleAuthStateChanged(user) {
-  const authorized = Boolean(user && ADMIN_UID !== 'rV6AU9sgpzT8lwyOpvOrLNT95T72' && user.uid === ADMIN_UID);
+  const authorized = Boolean(user && ADMIN_UID !== 'ADMIN_UID_PLACEHOLDER' && user.uid === ADMIN_UID);
   if (user && !authorized) {
     const wasAdmin = isAdmin;
     isAdmin = false;
     currentAdminUser = null;
     updateAdminUi();
     if (wasAdmin) clearTeamPrivateData();
-    showLoginError(ADMIN_UID === 'rV6AU9sgpzT8lwyOpvOrLNT95T72'
+    showLoginError(ADMIN_UID === 'ADMIN_UID_PLACEHOLDER'
       ? 'Configure o UID de administrador no arquivo do app.'
       : 'Esta conta não está autorizada como administradora.');
     auth.signOut().catch(error => console.error('Firebase sign-out error:', error));
@@ -831,7 +831,7 @@ function toggleAdminForm() {
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPass').value;
-  if (ADMIN_UID === 'rV6AU9sgpzT8lwyOpvOrLNT95T72') {
+  if (ADMIN_UID === 'ADMIN_UID_PLACEHOLDER') {
     showLoginError('Configure o UID de administrador no arquivo do app antes de entrar.');
     return;
   }
