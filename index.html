@@ -8,6 +8,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
   <!-- Flatpickr date picker -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.min.css">
@@ -122,6 +123,69 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
+    /* ── Team splitting ── */
+    #tab-times { max-width: 1100px; margin: 0 auto; }
+    .team-section { background: #1e2d3d; border: 1px solid #2a3f55; border-radius: 12px; padding: 16px; margin-bottom: 18px; }
+    .team-section h2 { font-size: 1rem; margin-bottom: 6px; color: #e8edf2; }
+    .team-section-copy { color: #94a3b8; font-size: 0.84rem; line-height: 1.5; margin-bottom: 14px; }
+    .team-storage-note { background: #2a2005; border: 1px solid #6b4e00; color: #fcd34d; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 0.84rem; line-height: 1.5; }
+    .team-add-player { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: end; margin-bottom: 14px; }
+    .team-player-field { display: grid; gap: 5px; min-width: 0; }
+    .team-player-field label { display: block; color: #94a3b8; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+    .team-player-field input, .team-player-field select, .team-swap-controls select { width: 100%; background: #0f1923; border: 1px solid #2a3f55; border-radius: 7px; color: #e8edf2; padding: 9px 11px; font: inherit; min-width: 0; }
+    .team-add-player button { width: 132px; justify-content: center; white-space: nowrap; min-height: 40px; }
+    .team-roster-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; color: #94a3b8; font-size: 0.82rem; margin-bottom: 8px; }
+    .team-roster-actions { display: flex; gap: 7px; }
+    .team-roster-list { display: grid; gap: 7px; max-height: 540px; overflow: auto; padding-right: 3px; }
+    .team-player-row { display: grid; grid-template-columns: 24px minmax(115px, 1fr) 76px minmax(260px, 2fr); gap: 10px; align-items: center; background: #0f1923; border: 1px solid #253547; border-radius: 8px; padding: 9px 10px; }
+    .team-player-row input[type="checkbox"] { accent-color: #4ade80; }
+    .team-player-name { color: #e8edf2; overflow-wrap: anywhere; font-size: 0.86rem; }
+    .team-player-row.remove-selected { border-color: #f87171; background: #25191c; }
+    .team-player-select { display: inline; max-width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; font-family: inherit; font-size: 0.86rem; font-weight: inherit; text-align: left; cursor: pointer; }
+    .team-player-select:hover:not(:disabled) { background: transparent; color: #fca5a5; text-decoration: underline; }
+    .team-rating-input { width: 100%; background: #1e2d3d; border: 1px solid #2a3f55; border-radius: 6px; color: #e8edf2; padding: 7px; font: inherit; }
+    .team-position-picks { display: flex; flex-wrap: wrap; gap: 5px 9px; }
+    .team-position-pick { display: inline-flex; align-items: center; gap: 4px; color: #94a3b8; font-size: 0.74rem; white-space: nowrap; }
+    .team-position-pick input { accent-color: #4ade80; }
+    .team-remove-btn { padding: 11px 20px; font-size: 0.9rem; white-space: nowrap; }
+    .team-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .team-actions button { flex: 1; justify-content: center; }
+    .team-board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .team-card { background: #0f1923; border: 1px solid #2a3f55; border-radius: 10px; overflow: hidden; }
+    .team-card-header { padding: 12px 14px; border-bottom: 1px solid #2a3f55; }
+    .team-card-title { font-weight: 700; color: #e8edf2; margin-bottom: 7px; }
+    .team-card-meta { display: flex; gap: 7px; flex-wrap: wrap; }
+    .team-player-list { list-style: none; padding: 5px 0; }
+    .team-player-item { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border-bottom: 1px solid #1e2d3d; }
+    .team-player-item:last-child { border-bottom: 0; }
+    .team-result-name { flex: 1; min-width: 0; color: #cbd5e1; font-size: 0.84rem; overflow-wrap: anywhere; }
+    .team-result-position { color: #64748b; font-size: 0.72rem; }
+    .team-result-rating { color: #4ade80; font-weight: 700; font-size: 0.82rem; white-space: nowrap; }
+    .team-lock-btn { background: transparent; color: #94a3b8; padding: 3px 5px; font-size: 0.9rem; }
+    .team-lock-btn.locked { color: #f59e0b; }
+    .team-swap-controls { display: grid; grid-template-columns: 1fr 1fr auto; align-items: end; gap: 8px; margin-top: 14px; }
+    .team-swap-controls label { display: grid; gap: 5px; color: #94a3b8; font-size: 0.76rem; }
+    .team-swap-controls select { width: 100%; }
+    .team-result-message { color: #94a3b8; font-size: 0.84rem; line-height: 1.5; }
+    .team-result-message.stale { color: #fcd34d; }
+    .team-copy-fallback { width: 100%; min-height: 120px; margin-top: 10px; background: #0a1520; border: 1px solid #2a3f55; border-radius: 8px; color: #e8edf2; padding: 10px; font: 0.82rem/1.5 Consolas, monospace; }
+    .team-saved-plan { border: 1px solid #2a3f55; border-radius: 8px; background: #0f1923; padding: 11px 12px; margin-top: 8px; }
+    .team-saved-plan strong { color: #e8edf2; }
+
+    @media (max-width: 900px) {
+      .team-add-player { grid-template-columns: minmax(0, 1fr) auto auto; }
+      .team-player-row { grid-template-columns: 22px minmax(0, 1fr) 70px; }
+      .team-position-picks { grid-column: 2 / -1; }
+    }
+    @media (max-width: 640px) {
+      .team-add-player { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .team-add-player button { width: 100%; }
+      .team-player-field { grid-column: 1 / -1; }
+      .team-board { grid-template-columns: 1fr; }
+      .team-swap-controls { grid-template-columns: 1fr; }
+      .team-player-row { gap: 7px; padding: 8px; }
+    }
+
     /* ── Input section ── */
     .input-section { max-width: 760px; margin: 0 auto 28px; }
 
@@ -220,6 +284,8 @@
     .btn-blue:hover:not(:disabled) { background: #162e40; }
     .btn-danger    { background: #2d1515; color: #f87171; border: 1px solid #5c2020; }
     .btn-danger:hover:not(:disabled) { background: #3a1c1c; }
+    .team-section .team-remove-btn { background: #b91c1c; color: #fff1f2; border: 1px solid #f87171; }
+    .team-section .team-remove-btn:hover:not(:disabled) { background: #dc2626; }
     .btn-yellow    { background: #2a2005; color: #f59e0b; border: 1px solid #6b4e00; }
     .btn-yellow:hover:not(:disabled) { background: #332808; }
     .btn-purple      { background: #2d1f50; color: #c4b5fd; border: 1px solid #5b3fa0; }
@@ -476,20 +542,20 @@
 <body>
 
 <header>
-  <h1>Fut Sábado ⚽</h1>
-  <p>Adicione os destaques dos jogos e veja os rankings automáticos</p>
+  <h1>Fut Sábado⚽</h1>
+  <p>Destaques dos jogos, com rankings por jogo e geral</p>
 
   <div id="adminArea">
     <button id="adminLoginBtn" class="btn-secondary" style="padding:6px 14px;font-size:0.82rem" onclick="toggleAdminForm()">🔒 Admin</button>
     <div id="adminLoginForm">
-      <input type="text"     id="loginUser" class="admin-input" placeholder="Usuário" autocomplete="off">
-      <input type="password" id="loginPass" class="admin-input" placeholder="Senha">
-      <button class="btn-green"     style="padding:6px 14px;font-size:0.82rem" onclick="doLogin()">Entrar</button>
-      <button class="btn-secondary" style="padding:6px 14px;font-size:0.82rem" onclick="toggleAdminForm()">✕</button>
-      <span class="login-error" id="loginError">Usuário ou senha incorretos</span>
+      <input type="email" id="loginEmail" class="admin-input" placeholder="E-mail do administrador" autocomplete="username">
+      <input type="password" id="loginPass" class="admin-input" placeholder="Senha" autocomplete="current-password">
+      <button type="button" class="btn-green" style="padding:6px 14px;font-size:0.82rem" onclick="doLogin()">Entrar</button>
+      <button type="button" class="btn-secondary" style="padding:6px 14px;font-size:0.82rem" onclick="toggleAdminForm()">✕</button>
+      <span class="login-error" id="loginError" role="alert"></span>
     </div>
     <div id="adminLoggedIn">
-      <span style="font-size:0.82rem;color:#4ade80">👤 gxlf</span>
+      <span id="adminIdentity" style="font-size:0.82rem;color:#4ade80"></span>
       <button class="btn-danger" style="padding:6px 14px;font-size:0.82rem" onclick="doLogout()">Sair</button>
     </div>
   </div>
@@ -499,6 +565,7 @@
   <button class="tab" id="tabNovoJogo" style="display:none" onclick="showTab('nova', this)">Novo Jogo</button>
   <button class="tab active" id="tabHistorico" onclick="showTab('historico', this)">Histórico Jogos</button>
   <button class="tab" onclick="showTab('geral', this)">Ranking Geral</button>
+  <button class="tab" id="tabDividirTimes" style="display:none" onclick="showTab('times', this)">Dividir Times</button>
 </nav>
 
 <!-- ══ Novo Jogo ══ -->
@@ -537,7 +604,7 @@
     <label>Data do jogo</label>
     <input type="text" id="saveDate" placeholder="DD/MM/AAAA" readonly>
     <label>Descrição (opcional)</label>
-    <input type="text" id="saveLabel" placeholder="ex: Bandeirantes — Turma A">
+    <input type="text" id="saveLabel" maxlength="120" placeholder="ex: Bandeirantes — Turma A">
     <label>URL Parte 1 (opcional)</label>
     <input type="url" id="saveVideoUrl1" placeholder="ex: https://drive.google.com/...">
     <label>URL Parte 2 (opcional)</label>
@@ -559,6 +626,59 @@
   <div id="geralContent"></div>
 </div>
 
+<!-- ══ Dividir Times ══ -->
+<div id="tab-times" class="tab-panel">
+  <section class="team-section">
+    <h2>Presença confirmada</h2>
+    <p class="team-section-copy">Marque quem confirmou presença, atribua uma nota manual de 1 a 10 e selecione as posições de cada pessoa. Os nomes históricos são mantidos como aparecem nos jogos; variações de nome não são mescladas.</p>
+    <div class="team-add-player">
+      <div class="team-player-field">
+        <label for="teamNewPlayerInput">Adicionar jogador novo</label>
+        <input id="teamNewPlayerInput" type="text" maxlength="80" autocomplete="off" placeholder="Nome do jogador">
+      </div>
+      <button type="button" class="btn-green" id="teamAddPlayerBtn">+ Adicionar</button>
+      <button type="button" class="btn-danger team-remove-btn" id="teamRemovePlayerBtn" disabled>Remover</button>
+    </div>
+    <p class="team-section-copy">Para remover um jogador adicionado manualmente, clique no nome dele na lista e depois em Remover.</p>
+    <div class="team-roster-toolbar">
+      <span id="teamRosterCount">0 selecionados</span>
+      <div class="team-roster-actions">
+        <button type="button" class="btn-secondary" id="teamSelectAllBtn">Selecionar todos</button>
+        <button type="button" class="btn-secondary" id="teamClearAllBtn">Limpar seleção</button>
+      </div>
+    </div>
+    <div id="teamRosterList" class="team-roster-list"></div>
+    <div class="team-actions">
+      <button type="button" class="btn-primary" id="teamGenerateBtn">Gerar times equilibrados</button>
+      <button type="button" class="btn-secondary" id="teamSaveProfilesBtn" disabled>Salvar perfis</button>
+    </div>
+    <div id="teamError" class="alert alert-error" style="display:none" role="alert"></div>
+    <p id="teamStorageStatus" class="team-section-copy" aria-live="polite">Entre como administrador para carregar os perfis.</p>
+  </section>
+
+  <section class="team-section" aria-live="polite">
+    <h2>Times</h2>
+    <p id="teamResultMessage" class="team-result-message">Selecione os jogadores confirmados e gere os times.</p>
+    <div id="teamBoard" class="team-board"></div>
+    <div id="teamSwapControls" class="team-swap-controls" style="display:none">
+      <label>Jogador do Time A<select id="teamSwapPlayerA"><option value="">Selecione</option></select></label>
+      <label>Jogador do Time B<select id="teamSwapPlayerB"><option value="">Selecione</option></select></label>
+      <button type="button" class="btn-secondary" id="teamSwapBtn">Trocar</button>
+    </div>
+    <div class="team-actions">
+      <button type="button" class="btn-secondary" id="teamCopyBtn" disabled>Copiar times</button>
+      <button type="button" class="btn-secondary" id="teamSavePlanBtn" disabled>Salvar times</button>
+    </div>
+    <textarea id="teamCopyFallback" class="team-copy-fallback" aria-label="Texto dos times para cópia manual" hidden readonly></textarea>
+  </section>
+
+  <section class="team-section">
+    <h2>Times salvos</h2>
+    <p class="team-section-copy">Perfis e planos são carregados do Firestore após o login de administrador.</p>
+    <div id="teamSavedPlans" class="team-result-message">Entre como administrador para carregar os planos salvos.</div>
+  </section>
+</div>
+
 <script>
 // ── Firebase config ────────────────────────────────────────────────
 // Replace the values below with your Firebase project config
@@ -573,73 +693,178 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
 const matchesCol = db.collection('matches');
+const playerProfilesCol = db.collection('playerProfiles');
+const teamPlansCol = db.collection('teamPlans');
+
+// Replace with the UID of the administrator created in Firebase Authentication.
+const ADMIN_UID = 'ADMIN_UID_PLACEHOLDER';
+let isAdmin = false;
+let currentAdminUser = null;
+let isSavingMatch = false;
 
 // ── In-memory cache (kept in sync by Firestore listener) ──────────
 let cachedMatches = [];
 
 matchesCol.orderBy('id', 'desc').onSnapshot(snap => {
-  cachedMatches = snap.docs.map(d => d.data());
+  cachedMatches = snap.docs.map(normalizeMatchRecord);
   updateHistoricoBadge();
   if (document.getElementById('tab-historico').classList.contains('active')) renderHistorico();
-  if (document.getElementById('tab-geral').classList.contains('active'))     renderGeral();
+  if (document.getElementById('tab-geral').classList.contains('active')) renderGeral();
+  if (document.getElementById('tab-times').classList.contains('active')) renderTeamBuilder();
 }, err => {
-  console.error('Firestore error:', err);
+  console.error('Firestore read error:', err);
+  const content = document.getElementById('historicoContent');
+  content.textContent = firestoreErrorMessage(err);
 });
 
-function loadMatches()    { return cachedMatches; }
-function addMatch(m)      { matchesCol.doc(m.id).set(m); }
-function removeMatch(id)  { matchesCol.doc(id).delete(); }
-
-// ── Admin ──────────────────────────────────────────────────────────
-const ADMIN_USER = 'gxlf';
-const ADMIN_PASS = 'tcb2k15';
-let isAdmin = false;
-
-function toggleAdminForm() {
-  const form = document.getElementById('adminLoginForm');
-  const btn  = document.getElementById('adminLoginBtn');
-  const showing = form.style.display === 'flex';
-  form.style.display = showing ? 'none' : 'flex';
-  btn.style.display  = showing ? 'inline-flex' : 'none';
-  if (!showing) {
-    document.getElementById('loginUser').focus();
-    document.getElementById('loginError').style.display = 'none';
-  }
+function normalizeMatchRecord(documentSnapshot) {
+  const data = documentSnapshot.data() || {};
+  const count = value => {
+    const number = Number(value);
+    return Number.isFinite(number) ? Math.max(0, Math.min(100000, Math.trunc(number))) : 0;
+  };
+  const players = Array.isArray(data.players) ? data.players.filter(player => player && typeof player.name === 'string').map(player => {
+    const goals = count(player.goals);
+    const assists = count(player.assists);
+    return {
+      name: player.name,
+      goals,
+      assists,
+      participation: player.participation === undefined ? goals + assists : count(player.participation),
+    };
+  }) : [];
+  return {
+    ...data,
+    id: documentSnapshot.id,
+    label: typeof data.label === 'string' ? data.label : '',
+    formatted: typeof data.formatted === 'string' ? data.formatted : '',
+    date: typeof data.date === 'string' ? data.date : '',
+    log: typeof data.log === 'string' ? data.log : '',
+    totalGoals: count(data.totalGoals),
+    totalAssists: count(data.totalAssists),
+    players,
+    ownGoals: Array.isArray(data.ownGoals) ? data.ownGoals.filter(name => typeof name === 'string') : [],
+    videoUrls: Array.isArray(data.videoUrls) ? data.videoUrls.filter(url => typeof url === 'string') : (typeof data.videoUrl === 'string' ? [data.videoUrl] : []),
+  };
 }
 
-function doLogin() {
-  const u = document.getElementById('loginUser').value.trim();
-  const p = document.getElementById('loginPass').value;
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
-    isAdmin = true;
-    document.getElementById('adminLoginForm').style.display = 'none';
-    document.getElementById('adminLoggedIn').style.display  = 'inline-flex';
-    document.getElementById('adminLoginBtn').style.display  = 'none';
-    document.getElementById('tabNovoJogo').style.display    = '';
-    document.getElementById('loginError').style.display     = 'none';
-    document.getElementById('loginPass').value = '';
-    if (document.getElementById('tab-historico').classList.contains('active')) renderHistorico();
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-  }
+function loadMatches() { return cachedMatches; }
+function addMatch(match) {
+  if (!isAdmin) throw new Error('Entre como administrador para salvar jogos.');
+  return matchesCol.doc(String(match.id)).set(match);
+}
+function removeMatch(id) {
+  if (!isAdmin) throw new Error('Entre como administrador para excluir jogos.');
+  return matchesCol.doc(String(id)).delete();
 }
 
-function doLogout() {
-  isAdmin = false;
-  document.getElementById('adminLoggedIn').style.display  = 'none';
-  document.getElementById('adminLoginBtn').style.display  = 'inline-flex';
-  document.getElementById('tabNovoJogo').style.display    = 'none';
-  // If currently on Novo Jogo tab, redirect to Histórico
-  if (document.getElementById('tab-nova').classList.contains('active')) {
+function firestoreErrorMessage(error) {
+  const code = error && error.code;
+  if (code === 'permission-denied' || code === 'unauthenticated') return 'Acesso negado. Confirme o login de administrador e as regras do Firestore.';
+  if (code === 'unavailable' || code === 'deadline-exceeded' || code === 'network-request-failed') return 'Não foi possível conectar ao Firestore. Verifique a conexão e tente novamente.';
+  return `Falha no Firestore${code ? ` (${code})` : ''}. Tente novamente.`;
+}
+
+// ── Firebase Authentication ───────────────────────────────────────
+function showLoginError(message) {
+  const error = document.getElementById('loginError');
+  error.textContent = message;
+  error.style.display = 'block';
+}
+
+function updateAdminUi() {
+  document.getElementById('adminLoggedIn').style.display = isAdmin ? 'inline-flex' : 'none';
+  document.getElementById('adminLoginBtn').style.display = isAdmin ? 'none' : 'inline-flex';
+  document.getElementById('tabNovoJogo').style.display = isAdmin ? '' : 'none';
+  document.getElementById('tabDividirTimes').style.display = isAdmin ? '' : 'none';
+  document.getElementById('adminLoginForm').style.display = isAdmin ? 'none' : document.getElementById('adminLoginForm').style.display;
+  document.getElementById('adminIdentity').textContent = isAdmin
+    ? `👤 ${currentAdminUser.email || 'Administrador'}`
+    : '';
+  if (!isAdmin && (document.getElementById('tab-nova').classList.contains('active') || document.getElementById('tab-times').classList.contains('active'))) {
     showTab('historico', document.getElementById('tabHistorico'));
   }
   if (document.getElementById('tab-historico').classList.contains('active')) renderHistorico();
 }
 
-// Allow Enter key on login form
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('adminLoginForm').style.display === 'flex') doLogin();
+function handleAuthStateChanged(user) {
+  const authorized = Boolean(user && ADMIN_UID !== 'ADMIN_UID_PLACEHOLDER' && user.uid === ADMIN_UID);
+  if (user && !authorized) {
+    const wasAdmin = isAdmin;
+    isAdmin = false;
+    currentAdminUser = null;
+    updateAdminUi();
+    if (wasAdmin) clearTeamPrivateData();
+    showLoginError(ADMIN_UID === 'ADMIN_UID_PLACEHOLDER'
+      ? 'Configure o UID de administrador no arquivo do app.'
+      : 'Esta conta não está autorizada como administradora.');
+    auth.signOut().catch(error => console.error('Firebase sign-out error:', error));
+    return;
+  }
+
+  const wasAdmin = isAdmin;
+  currentAdminUser = authorized ? user : null;
+  isAdmin = authorized;
+  updateAdminUi();
+  if (wasAdmin && !isAdmin) clearTeamPrivateData();
+  if (!wasAdmin && isAdmin) startTeamPrivateListeners();
+  if (isAdmin) {
+    document.getElementById('loginError').style.display = 'none';
+    document.getElementById('loginPass').value = '';
+    if (document.getElementById('tab-times').classList.contains('active')) renderTeamBuilder();
+  }
+}
+
+function toggleAdminForm() {
+  const form = document.getElementById('adminLoginForm');
+  const showing = form.style.display === 'flex';
+  form.style.display = showing ? 'none' : 'flex';
+  document.getElementById('adminLoginBtn').style.display = showing ? 'inline-flex' : 'none';
+  if (!showing) {
+    document.getElementById('loginEmail').focus();
+    document.getElementById('loginError').style.display = 'none';
+  }
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPass').value;
+  if (ADMIN_UID === 'ADMIN_UID_PLACEHOLDER') {
+    showLoginError('Configure o UID de administrador no arquivo do app antes de entrar.');
+    return;
+  }
+  if (!email || !password) {
+    showLoginError('Informe o e-mail e a senha do administrador.');
+    return;
+  }
+  document.getElementById('loginError').style.display = 'none';
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+  } catch (error) {
+    const code = error && error.code;
+    const message = code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found'
+      ? 'E-mail ou senha incorretos.'
+      : code === 'auth/too-many-requests'
+        ? 'Muitas tentativas. Aguarde antes de tentar novamente.'
+        : code === 'auth/network-request-failed'
+          ? 'Falha de conexão. Verifique sua internet e tente novamente.'
+          : `Não foi possível entrar${code ? ` (${code})` : ''}.`;
+    showLoginError(message);
+  }
+}
+
+async function doLogout() {
+  try {
+    await auth.signOut();
+  } catch (error) {
+    showLoginError(firestoreErrorMessage(error));
+  }
+}
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Enter' && document.getElementById('adminLoginForm').style.display === 'flex') doLogin();
 });
 
 // ── File loader ────────────────────────────────────────────────────
@@ -660,14 +885,872 @@ function loadFile(input) {
 // ── State ─────────────────────────────────────────────────────────
 let currentData = null;
 
+// ── Team planning ──────────────────────────────────────────────────
+const TEAM_POSITIONS = ['GOL', 'ZAG', 'LE', 'LD', 'VOL', 'MLG', 'MAT', 'MLE', 'MLD', 'PD', 'PE', 'CA', 'SA'];
+let teamAttendees = new Set();
+let teamAdditionalPlayers = [];
+let teamProfileDrafts = Object.create(null);
+let teamProfileDirtyNames = new Set();
+let teamProfilesToDelete = new Set();
+let teamPlans = [];
+let teamProfilesLoaded = false;
+let teamPlansLoaded = false;
+let teamProfilesLoadError = false;
+let teamPlansLoadError = false;
+let teamProfilesUnsubscribe = null;
+let teamPlansUnsubscribe = null;
+let teamSavingProfiles = false;
+let teamSavingPlan = false;
+let teamSelectedForRemoval = null;
+let teamLockedNames = new Set();
+let teamCurrentSplit = null;
+let teamCurrentSplitValid = false;
+let teamCurrentSplitSource = 'generated';
+
+function teamPlayerNames() {
+  const names = new Set();
+  cachedMatches.forEach(match => (Array.isArray(match.players) ? match.players : []).forEach(player => {
+    if (player && typeof player.name === 'string' && player.name.trim()) names.add(player.name.trim());
+  }));
+  teamAdditionalPlayers.forEach(name => names.add(name));
+  return [...names].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+}
+
+function teamIsHistorical(name) {
+  return cachedMatches.some(match => (Array.isArray(match.players) ? match.players : []).some(player => player && player.name === name));
+}
+
+function teamProfileDocId(name) {
+  return `p_${Array.from(String(name), character => character.codePointAt(0).toString(16)).join('_')}`;
+}
+
+function teamSetStorageStatus(message) {
+  document.getElementById('teamStorageStatus').textContent = message;
+}
+
+function teamNormalizeSavedPlayers(players) {
+  if (!Array.isArray(players) || !players.length) return [];
+  const normalized = [];
+  for (const player of players) {
+    if (!player || typeof player.name !== 'string' || !player.name.trim() || player.name.trim().length > 120
+        || !Number.isInteger(player.rating) || player.rating < 1 || player.rating > 10
+        || !Array.isArray(player.positions) || !player.positions.length) return [];
+    const positions = TEAM_POSITIONS.filter(position => player.positions.includes(position));
+    if (positions.length !== player.positions.length) return [];
+    normalized.push({ name: player.name.trim(), rating: player.rating, positions });
+  }
+  return normalized;
+}
+
+function teamRemoveAddedPlayer(name) {
+  if (!teamAdditionalPlayers.includes(name) || teamIsHistorical(name)) return;
+  teamAdditionalPlayers = teamAdditionalPlayers.filter(playerName => playerName !== name);
+  teamAttendees.delete(name);
+  teamLockedNames.delete(name);
+  delete teamProfileDrafts[name];
+  teamProfileDirtyNames.delete(name);
+  teamProfilesToDelete.add(name);
+  teamSelectedForRemoval = null;
+  if (teamCurrentSplit) {
+    teamCurrentSplit.teams = teamCurrentSplit.teams.map(team => team.filter(player => player.name !== name));
+    teamCurrentSplit.players = teamCurrentSplit.players.filter(player => player.name !== name);
+  }
+  teamMarkDraftStale();
+  teamClearError();
+  teamSetStorageStatus('Jogador removido da lista. Clique em Salvar perfis para sincronizar a remoção.');
+  renderTeamBuilder();
+}
+
+function teamUpdateRemoveButton() {
+  const selectedName = teamSelectedForRemoval;
+  const canRemove = Boolean(selectedName && teamAdditionalPlayers.includes(selectedName) && !teamIsHistorical(selectedName));
+  if (!canRemove) teamSelectedForRemoval = null;
+  document.getElementById('teamRemovePlayerBtn').disabled = !canRemove;
+}
+
+function teamRemoveSelectedPlayer() {
+  if (teamSelectedForRemoval) teamRemoveAddedPlayer(teamSelectedForRemoval);
+}
+
+function teamProfileFor(name) {
+  if (!Object.prototype.hasOwnProperty.call(teamProfileDrafts, name)) {
+    teamProfileDrafts[name] = { rating: '', positions: [] };
+  }
+  return teamProfileDrafts[name];
+}
+
+function teamShowError(message) {
+  const error = document.getElementById('teamError');
+  error.textContent = message;
+  error.style.display = 'block';
+}
+
+function teamClearError() {
+  const error = document.getElementById('teamError');
+  error.textContent = '';
+  error.style.display = 'none';
+}
+
+function teamUpdateCount() {
+  const selected = teamAttendees.size;
+  document.getElementById('teamRosterCount').textContent = `${selected} selecionado${selected === 1 ? '' : 's'}`;
+}
+
+function teamMarkDraftStale() {
+  if (teamCurrentSplit) {
+    teamCurrentSplitValid = false;
+    const message = document.getElementById('teamResultMessage');
+    message.textContent = 'Presença, nota ou posição alterada. Gere os times novamente antes de copiar.';
+    message.classList.add('stale');
+  }
+  teamUpdateActionButtons();
+}
+
+function teamUpdateActionButtons() {
+  document.getElementById('teamCopyBtn').disabled = !teamCurrentSplit || !teamCurrentSplitValid;
+  document.getElementById('teamSaveProfilesBtn').disabled = !isAdmin || !teamProfilesLoaded || teamProfilesLoadError || teamSavingProfiles;
+  document.getElementById('teamSavePlanBtn').disabled = !isAdmin || !teamPlansLoaded || teamPlansLoadError || teamSavingPlan || !teamCurrentSplit || !teamCurrentSplitValid;
+  const canSwap = Boolean(teamCurrentSplit && teamCurrentSplitValid);
+  document.getElementById('teamSwapPlayerA').disabled = !canSwap;
+  document.getElementById('teamSwapPlayerB').disabled = !canSwap;
+  document.getElementById('teamSwapBtn').disabled = !canSwap;
+}
+
+function renderTeamBuilder() {
+  if (!isAdmin) return;
+  teamUpdateRemoveButton();
+  const list = document.getElementById('teamRosterList');
+  list.replaceChildren();
+  const names = teamPlayerNames();
+
+  if (!names.length) {
+    const empty = document.createElement('p');
+    empty.className = 'team-result-message';
+    empty.textContent = 'Ainda não há jogadores históricos. Adicione os participantes confirmados acima.';
+    list.appendChild(empty);
+  }
+
+  names.forEach((name, index) => {
+    const profile = teamProfileFor(name);
+    const row = document.createElement('div');
+    row.className = `team-player-row${teamSelectedForRemoval === name ? ' remove-selected' : ''}`;
+
+    const attendee = document.createElement('input');
+    attendee.type = 'checkbox';
+    attendee.id = `team-attendee-${index}`;
+    attendee.checked = teamAttendees.has(name);
+    attendee.setAttribute('aria-label', `Presença confirmada: ${name}`);
+    attendee.addEventListener('change', () => {
+      if (attendee.checked) teamAttendees.add(name);
+      else teamAttendees.delete(name);
+      teamUpdateCount();
+      teamMarkDraftStale();
+    });
+    row.appendChild(attendee);
+
+    const removable = teamAdditionalPlayers.includes(name) && !teamIsHistorical(name);
+    const nameLabel = document.createElement(removable ? 'button' : 'label');
+    nameLabel.className = `team-player-name${removable ? ' team-player-select' : ''}`;
+    nameLabel.textContent = name;
+    if (removable) {
+      nameLabel.type = 'button';
+      nameLabel.setAttribute('aria-label', `Selecionar ${name} para remoção`);
+      nameLabel.setAttribute('aria-pressed', String(teamSelectedForRemoval === name));
+      nameLabel.addEventListener('click', () => {
+        teamSelectedForRemoval = teamSelectedForRemoval === name ? null : name;
+        renderTeamBuilder();
+      });
+    } else {
+      nameLabel.htmlFor = attendee.id;
+    }
+    row.appendChild(nameLabel);
+
+    const rating = document.createElement('input');
+    rating.className = 'team-rating-input';
+    rating.type = 'number';
+    rating.min = '1';
+    rating.max = '10';
+    rating.step = '1';
+    rating.value = profile.rating;
+    rating.placeholder = '1–10';
+    rating.setAttribute('aria-label', `Nota de ${name}, de 1 a 10`);
+    rating.addEventListener('input', () => {
+      profile.rating = rating.value;
+      teamProfileDirtyNames.add(name);
+      teamProfilesToDelete.delete(name);
+      teamMarkDraftStale();
+    });
+    row.appendChild(rating);
+
+    const positions = document.createElement('div');
+    positions.className = 'team-position-picks';
+    TEAM_POSITIONS.forEach(position => {
+      const label = document.createElement('label');
+      label.className = 'team-position-pick';
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = profile.positions.includes(position);
+      checkbox.setAttribute('aria-label', `${position}: ${name}`);
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked && !profile.positions.includes(position)) profile.positions.push(position);
+        if (!checkbox.checked) profile.positions = profile.positions.filter(item => item !== position);
+        teamProfileDirtyNames.add(name);
+        teamProfilesToDelete.delete(name);
+        teamMarkDraftStale();
+      });
+      label.append(checkbox, document.createTextNode(position));
+      positions.appendChild(label);
+    });
+    row.appendChild(positions);
+    list.appendChild(row);
+  });
+
+  teamUpdateCount();
+  teamUpdateActionButtons();
+  renderTeamResults();
+}
+
+function teamSetAllAttendance(checked) {
+  teamPlayerNames().forEach(name => {
+    if (checked) teamAttendees.add(name);
+    else teamAttendees.delete(name);
+  });
+  renderTeamBuilder();
+  teamMarkDraftStale();
+}
+
+function teamAddPlayer() {
+  const input = document.getElementById('teamNewPlayerInput');
+  const name = input.value.trim();
+  if (!name) {
+    teamShowError('Informe o nome do jogador.');
+    input.focus();
+    return;
+  }
+  if (teamPlayerNames().includes(name)) {
+    teamAttendees.add(name);
+    teamClearError();
+    renderTeamBuilder();
+    input.value = '';
+    return;
+  }
+  teamAdditionalPlayers.push(name);
+  teamAttendees.add(name);
+  teamProfilesToDelete.delete(name);
+  teamProfileDirtyNames.add(name);
+  teamProfileFor(name);
+  input.value = '';
+  teamClearError();
+  renderTeamBuilder();
+  teamMarkDraftStale();
+}
+
+function teamCollectSelectedPlayers() {
+  const selectedNames = teamPlayerNames().filter(name => teamAttendees.has(name));
+  if (selectedNames.length < 2) throw new Error('Selecione pelo menos dois jogadores confirmados.');
+  return selectedNames.map(name => {
+    const profile = teamProfileFor(name);
+    const rating = Number(profile.rating);
+    const positions = TEAM_POSITIONS.filter(position => profile.positions.includes(position));
+    if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
+      throw new Error(`Informe uma nota inteira de 1 a 10 para ${name}.`);
+    }
+    if (!positions.length) throw new Error(`Selecione pelo menos uma posição para ${name}.`);
+    return { name, rating, positions };
+  });
+}
+
+function teamShuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function teamBalanceScore(teams, players, targetSizes) {
+  const totalRating = players.reduce((sum, player) => sum + player.rating, 0);
+  const targetRatingA = totalRating * targetSizes[0] / players.length;
+  const ratingA = teams[0].reduce((sum, player) => sum + player.rating, 0);
+  const ratingPenalty = Math.abs(ratingA - targetRatingA) / Math.max(totalRating, 1);
+  let positionPenalty = 0;
+  let positionWeightTotal = 0;
+
+  TEAM_POSITIONS.forEach(position => {
+    const eligible = players.filter(player => player.positions.includes(position)).length;
+    if (!eligible) return;
+    const weight = position === 'GOL' ? (eligible >= 2 ? 3.5 : 0.35) : 1;
+    const targetA = eligible * targetSizes[0] / players.length;
+    const assignedA = teams[0].filter(player => player.positions.includes(position)).length;
+    positionPenalty += weight * Math.abs(assignedA - targetA) / eligible;
+    positionWeightTotal += weight;
+  });
+
+  return ratingPenalty * 1.4 + (positionWeightTotal ? positionPenalty / positionWeightTotal : 0) * 0.9;
+}
+
+function teamGenerateBalanced(players, fixedAssignments) {
+  const targetSizes = [Math.ceil(players.length / 2), Math.floor(players.length / 2)];
+  const fixed = [[], []];
+  fixedAssignments.forEach((teamIndex, name) => {
+    const player = players.find(item => item.name === name);
+    if (player) fixed[teamIndex].push(player);
+  });
+  if (fixed[0].length > targetSizes[0] || fixed[1].length > targetSizes[1]) {
+    throw new Error('Os jogadores bloqueados impedem uma divisão equilibrada. Desbloqueie alguém e tente novamente.');
+  }
+
+  let bestTeams = null;
+  let bestScore = Infinity;
+  const attempts = 160;
+
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const teams = [ [...fixed[0]], [...fixed[1]] ];
+    const lockedNames = new Set(fixedAssignments.keys());
+    const openPlayers = players.filter(player => !lockedNames.has(player.name));
+    const shuffled = teamShuffle(openPlayers);
+    shuffled.sort((a, b) => {
+      const scarcity = a.positions.length - b.positions.length;
+      return scarcity || b.rating - a.rating;
+    });
+
+    for (const player of shuffled) {
+      const options = [0, 1].filter(index => teams[index].length < targetSizes[index]);
+      if (options.length === 1) {
+        teams[options[0]].push(player);
+        continue;
+      }
+      let chosen = options[0];
+      let chosenScore = Infinity;
+      options.forEach(index => {
+        teams[index].push(player);
+        const score = teamBalanceScore(teams, players, targetSizes) + Math.random() * 0.015;
+        teams[index].pop();
+        if (score < chosenScore) {
+          chosen = index;
+          chosenScore = score;
+        }
+      });
+      teams[chosen].push(player);
+    }
+
+    let score = teamBalanceScore(teams, players, targetSizes);
+    for (let round = 0; round < 10; round++) {
+      let improved = false;
+      let nextBestScore = score;
+      let nextTeams = null;
+      for (let a = 0; a < teams[0].length; a++) {
+        if (lockedNames.has(teams[0][a].name)) continue;
+        for (let b = 0; b < teams[1].length; b++) {
+          if (lockedNames.has(teams[1][b].name)) continue;
+          const candidate = [ [...teams[0]], [...teams[1]] ];
+          [candidate[0][a], candidate[1][b]] = [candidate[1][b], candidate[0][a]];
+          const candidateScore = teamBalanceScore(candidate, players, targetSizes);
+          if (candidateScore + 0.000001 < nextBestScore) {
+            nextBestScore = candidateScore;
+            nextTeams = candidate;
+          }
+        }
+      }
+      if (!nextTeams) break;
+      teams[0] = nextTeams[0];
+      teams[1] = nextTeams[1];
+      score = nextBestScore;
+      improved = true;
+      if (!improved) break;
+    }
+
+    if (score < bestScore) {
+      bestScore = score;
+      bestTeams = teams;
+    }
+  }
+
+  return { teams: bestTeams || [[], []], score: bestScore };
+}
+
+function teamGenerate() {
+  teamClearError();
+  let players;
+  try {
+    players = teamCollectSelectedPlayers();
+    const fixedAssignments = new Map();
+    if (teamCurrentSplit) {
+      teamCurrentSplit.teams.forEach((team, teamIndex) => team.forEach(player => {
+        if (teamLockedNames.has(player.name) && players.some(item => item.name === player.name)) {
+          fixedAssignments.set(player.name, teamIndex);
+        }
+      }));
+    }
+    teamCurrentSplit = teamGenerateBalanced(players, fixedAssignments);
+    teamCurrentSplit.players = players;
+    teamCurrentSplit.generatedAt = new Date();
+    teamCurrentSplitSource = 'generated';
+    teamCurrentSplitValid = true;
+    renderTeamResults();
+  } catch (error) {
+    teamShowError(error.message);
+  }
+}
+
+function teamCoverageLabel(team, position) {
+  return `${position}: ${team.filter(player => player.positions.includes(position)).length}`;
+}
+
+function renderTeamResults() {
+  const board = document.getElementById('teamBoard');
+  const swapControls = document.getElementById('teamSwapControls');
+  const message = document.getElementById('teamResultMessage');
+  board.replaceChildren();
+  if (!teamCurrentSplit) {
+    swapControls.style.display = 'none';
+    message.textContent = 'Selecione os jogadores confirmados e gere os times.';
+    message.classList.remove('stale');
+    teamUpdateActionButtons();
+    return;
+  }
+
+  const teams = teamCurrentSplit.teams;
+  teams.forEach((team, teamIndex) => {
+    const card = document.createElement('div');
+    card.className = 'team-card';
+    const header = document.createElement('div');
+    header.className = 'team-card-header';
+    const title = document.createElement('div');
+    title.className = 'team-card-title';
+    title.textContent = `Time ${teamIndex === 0 ? 'A' : 'B'}`;
+    header.appendChild(title);
+
+    const totalRating = team.reduce((sum, player) => sum + player.rating, 0);
+    const averageRating = team.length ? (totalRating / team.length).toFixed(1) : '0.0';
+    const meta = document.createElement('div');
+    meta.className = 'team-card-meta';
+    [ `${team.length} jogadores`, `Nota total: ${totalRating}`, `Média: ${averageRating}`, ...TEAM_POSITIONS.map(position => teamCoverageLabel(team, position)) ].forEach(text => {
+      const item = document.createElement('span');
+      item.className = 'meta-chip';
+      item.textContent = text;
+      meta.appendChild(item);
+    });
+    header.appendChild(meta);
+    card.appendChild(header);
+
+    const list = document.createElement('ul');
+    list.className = 'team-player-list';
+    team.forEach(player => {
+      const item = document.createElement('li');
+      item.className = 'team-player-item';
+      const name = document.createElement('span');
+      name.className = 'team-result-name';
+      name.textContent = player.name;
+      item.appendChild(name);
+      const role = document.createElement('span');
+      role.className = 'team-result-position';
+      role.textContent = player.positions.join(' · ');
+      item.appendChild(role);
+      const rating = document.createElement('span');
+      rating.className = 'team-result-rating';
+      rating.textContent = String(player.rating);
+      item.appendChild(rating);
+      const lock = document.createElement('button');
+      lock.type = 'button';
+      lock.className = `team-lock-btn${teamLockedNames.has(player.name) ? ' locked' : ''}`;
+      lock.title = teamLockedNames.has(player.name) ? 'Desbloquear jogador' : 'Bloquear no time atual';
+      lock.setAttribute('aria-label', lock.title);
+      lock.setAttribute('aria-pressed', String(teamLockedNames.has(player.name)));
+      lock.textContent = teamLockedNames.has(player.name) ? '🔒' : '🔓';
+      lock.addEventListener('click', () => {
+        if (teamLockedNames.has(player.name)) teamLockedNames.delete(player.name);
+        else teamLockedNames.add(player.name);
+        renderTeamResults();
+      });
+      item.appendChild(lock);
+      list.appendChild(item);
+    });
+    card.appendChild(list);
+    board.appendChild(card);
+  });
+
+  const playerSetsMatch = teamCurrentSplitSource === 'saved'
+    || (teams.flat().length === teamAttendees.size && teams.flat().every(player => teamAttendees.has(player.name)));
+  if (!teamCurrentSplitValid || !playerSetsMatch) {
+    teamCurrentSplitValid = false;
+    message.textContent = 'A lista ou o perfil mudou desde a geração. Gere os times novamente antes de copiar.';
+    message.classList.add('stale');
+  } else {
+    const ratingDelta = Math.abs(teams[0].reduce((sum, player) => sum + player.rating, 0) - teams[1].reduce((sum, player) => sum + player.rating, 0));
+    message.textContent = `Divisão pronta. Diferença entre as notas totais: ${ratingDelta}. Use os bloqueios para manter jogadores no time ao gerar novamente.`;
+    message.classList.remove('stale');
+  }
+
+  const selectA = document.getElementById('teamSwapPlayerA');
+  const selectB = document.getElementById('teamSwapPlayerB');
+  selectA.replaceChildren(new Option('Selecione', ''));
+  selectB.replaceChildren(new Option('Selecione', ''));
+  teams[0].forEach(player => selectA.add(new Option(player.name, player.name)));
+  teams[1].forEach(player => selectB.add(new Option(player.name, player.name)));
+  swapControls.style.display = 'grid';
+  teamUpdateActionButtons();
+}
+
+function teamSwapSelected() {
+  if (!teamCurrentSplit || !teamCurrentSplitValid) return;
+  const nameA = document.getElementById('teamSwapPlayerA').value;
+  const nameB = document.getElementById('teamSwapPlayerB').value;
+  if (!nameA || !nameB) {
+    teamShowError('Selecione um jogador de cada time para trocar.');
+    return;
+  }
+  if (teamLockedNames.has(nameA) || teamLockedNames.has(nameB)) {
+    teamShowError('Desbloqueie os jogadores antes de trocá-los.');
+    return;
+  }
+  const teamA = teamCurrentSplit.teams[0];
+  const teamB = teamCurrentSplit.teams[1];
+  const indexA = teamA.findIndex(player => player.name === nameA);
+  const indexB = teamB.findIndex(player => player.name === nameB);
+  if (indexA < 0 || indexB < 0) return;
+  [teamA[indexA], teamB[indexB]] = [teamB[indexB], teamA[indexA]];
+  teamClearError();
+  renderTeamResults();
+}
+
+function teamSplitText() {
+  return teamCurrentSplit.teams.map((team, index) => {
+    const total = team.reduce((sum, player) => sum + player.rating, 0);
+    const players = team.map(player => `- ${player.name} (nota ${player.rating}; ${player.positions.join(', ')})`).join('\n');
+    return `TIME ${index === 0 ? 'A' : 'B'} — nota total ${total}\n${players}`;
+  }).join('\n\n');
+}
+
+async function teamCopy() {
+  if (!teamCurrentSplit || !teamCurrentSplitValid) return;
+  const text = teamSplitText();
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      document.getElementById('teamResultMessage').textContent = 'Times copiados para a área de transferência.';
+      return;
+    }
+  } catch (error) {
+    console.warn('Clipboard API indisponível:', error);
+  }
+  const fallback = document.getElementById('teamCopyFallback');
+  fallback.hidden = false;
+  fallback.value = text;
+  fallback.focus();
+  fallback.select();
+  document.getElementById('teamResultMessage').textContent = 'Cópia automática indisponível. O texto está selecionado abaixo; use Ctrl+C.';
+}
+
+function stopTeamPrivateListeners() {
+  if (teamProfilesUnsubscribe) teamProfilesUnsubscribe();
+  if (teamPlansUnsubscribe) teamPlansUnsubscribe();
+  teamProfilesUnsubscribe = null;
+  teamPlansUnsubscribe = null;
+}
+
+function clearTeamPrivateData() {
+  stopTeamPrivateListeners();
+  teamAttendees = new Set();
+  teamAdditionalPlayers = [];
+  teamProfileDrafts = Object.create(null);
+  teamProfileDirtyNames.clear();
+  teamProfilesToDelete.clear();
+  teamPlans = [];
+  teamProfilesLoaded = false;
+  teamPlansLoaded = false;
+  teamProfilesLoadError = false;
+  teamPlansLoadError = false;
+  teamSelectedForRemoval = null;
+  teamLockedNames.clear();
+  teamCurrentSplit = null;
+  teamCurrentSplitValid = false;
+  teamCurrentSplitSource = 'generated';
+  teamClearError();
+  teamSetStorageStatus('Entre como administrador para carregar os perfis.');
+  document.getElementById('teamSavedPlans').textContent = 'Entre como administrador para carregar os planos salvos.';
+  document.getElementById('teamRosterList').replaceChildren();
+  document.getElementById('teamRosterCount').textContent = '0 selecionados';
+  document.getElementById('teamRemovePlayerBtn').disabled = true;
+  renderTeamResults();
+  teamUpdateActionButtons();
+}
+
+function startTeamPrivateListeners() {
+  stopTeamPrivateListeners();
+  teamProfilesLoaded = false;
+  teamPlansLoaded = false;
+  teamProfilesLoadError = false;
+  teamPlansLoadError = false;
+  teamSetStorageStatus('Carregando perfis compartilhados...');
+  document.getElementById('teamSavedPlans').textContent = 'Carregando planos salvos...';
+  teamUpdateActionButtons();
+
+  teamProfilesUnsubscribe = playerProfilesCol.onSnapshot(snapshot => {
+    if (!isAdmin) return;
+    const unsavedManual = teamAdditionalPlayers.filter(name => teamProfileDirtyNames.has(name) && !teamProfilesToDelete.has(name));
+    Object.keys(teamProfileDrafts).forEach(name => {
+      if (!teamProfileDirtyNames.has(name)) delete teamProfileDrafts[name];
+    });
+    const savedManual = [];
+    snapshot.docs.forEach(doc => {
+      const data = doc.data();
+      if (typeof data.name !== 'string' || !data.name.trim() || teamProfilesToDelete.has(data.name) || teamProfileDirtyNames.has(data.name)) return;
+      const positions = Array.isArray(data.positions) ? TEAM_POSITIONS.filter(position => data.positions.includes(position)) : [];
+      const rating = Number.isInteger(data.rating) && data.rating >= 1 && data.rating <= 10 ? String(data.rating) : '';
+      teamProfileDrafts[data.name] = { rating, positions };
+      if (data.manuallyAdded === true && !teamIsHistorical(data.name)) savedManual.push(data.name);
+    });
+    teamAdditionalPlayers = [...new Set([...savedManual, ...unsavedManual])];
+    teamProfilesLoaded = true;
+    teamProfilesLoadError = false;
+    teamSetStorageStatus('Perfis carregados. Alterações e remoções são sincronizadas ao clicar em Salvar perfis.');
+    teamUpdateActionButtons();
+    if (document.getElementById('tab-times').classList.contains('active')) renderTeamBuilder();
+  }, error => {
+    if (!isAdmin) return;
+    console.error('Player profiles read error:', error);
+    teamProfilesLoadError = true;
+    teamSetStorageStatus(firestoreErrorMessage(error));
+    teamUpdateActionButtons();
+  });
+
+  teamPlansUnsubscribe = teamPlansCol.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+    if (!isAdmin) return;
+    teamPlans = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    teamPlansLoaded = true;
+    teamPlansLoadError = false;
+    teamRenderSavedPlans();
+    teamUpdateActionButtons();
+  }, error => {
+    if (!isAdmin) return;
+    console.error('Team plans read error:', error);
+    teamPlansLoadError = true;
+    document.getElementById('teamSavedPlans').textContent = firestoreErrorMessage(error);
+    teamUpdateActionButtons();
+  });
+}
+
+function teamRenderSavedPlans() {
+  const container = document.getElementById('teamSavedPlans');
+  container.replaceChildren();
+  if (!isAdmin) {
+    container.textContent = 'Entre como administrador para carregar os planos salvos.';
+    return;
+  }
+  if (!teamPlansLoaded) {
+    container.textContent = 'Carregando planos salvos...';
+    return;
+  }
+  if (!teamPlans.length) {
+    container.textContent = 'Nenhum plano salvo.';
+    return;
+  }
+
+  teamPlans.forEach(plan => {
+    const card = document.createElement('div');
+    card.className = 'team-card';
+    card.style.marginBottom = '12px';
+    const title = document.createElement('div');
+    title.className = 'team-card-title';
+    const dateValue = plan.createdAt && typeof plan.createdAt.toDate === 'function'
+      ? plan.createdAt.toDate()
+      : new Date(plan.createdAtIso || '');
+    title.textContent = Number.isNaN(dateValue.getTime()) ? 'Plano salvo' : `Plano salvo — ${dateValue.toLocaleString('pt-BR')}`;
+    card.appendChild(title);
+    const teamA = teamNormalizeSavedPlayers(plan.teamA);
+    const teamB = teamNormalizeSavedPlayers(plan.teamB);
+    const summary = document.createElement('p');
+    summary.className = 'team-section-copy';
+    summary.textContent = `Time A: ${teamA.length} jogadores · Time B: ${teamB.length} jogadores`;
+    card.appendChild(summary);
+    const actions = document.createElement('div');
+    actions.className = 'team-actions';
+    const loadButton = document.createElement('button');
+    loadButton.type = 'button';
+    loadButton.className = 'btn-secondary';
+    loadButton.textContent = 'Carregar';
+    loadButton.addEventListener('click', () => teamLoadSavedPlan(plan));
+    const copyButton = document.createElement('button');
+    copyButton.type = 'button';
+    copyButton.className = 'btn-secondary';
+    copyButton.textContent = 'Copiar';
+    copyButton.addEventListener('click', () => teamCopySavedPlan(plan));
+    actions.append(loadButton, copyButton);
+    card.appendChild(actions);
+    container.appendChild(card);
+  });
+}
+
+function teamLoadSavedPlan(plan) {
+  const teams = [teamNormalizeSavedPlayers(plan.teamA), teamNormalizeSavedPlayers(plan.teamB)];
+  const players = teams.flat();
+  if (teams.some(team => !team.length) || players.length < 2 || new Set(players.map(player => player.name)).size !== players.length) {
+    teamShowError('Este plano salvo está incompleto ou contém dados inválidos.');
+    return;
+  }
+  teamCurrentSplit = { teams, players, score: null, generatedAt: plan.createdAt || null };
+  teamCurrentSplitValid = true;
+  teamCurrentSplitSource = 'saved';
+  teamLockedNames = new Set();
+  renderTeamResults();
+  document.getElementById('teamResultMessage').textContent = 'Plano salvo carregado. Você pode trocar jogadores, copiar ou gerar novamente.';
+  teamClearError();
+  document.getElementById('teamBoard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function teamCopySavedPlan(plan) {
+  const teams = [teamNormalizeSavedPlayers(plan.teamA), teamNormalizeSavedPlayers(plan.teamB)];
+  const players = teams.flat();
+  if (teams.some(team => !team.length) || players.length < 2 || new Set(players.map(player => player.name)).size !== players.length) {
+    teamShowError('Este plano salvo está incompleto ou contém jogadores duplicados.');
+    return;
+  }
+  const text = teams.map((team, index) => {
+    const total = team.reduce((sum, player) => sum + player.rating, 0);
+    const lines = team.map(player => `- ${player.name} (nota ${player.rating}; ${player.positions.join(', ')})`).join('\n');
+    return `TIME ${index === 0 ? 'A' : 'B'} — nota total ${total}\n${lines}`;
+  }).join('\n\n');
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      teamSetStorageStatus('Plano copiado para a área de transferência.');
+      return;
+    }
+  } catch (error) {
+    console.warn('Clipboard API indisponível:', error);
+  }
+  const fallback = document.getElementById('teamCopyFallback');
+  fallback.hidden = false;
+  fallback.value = text;
+  fallback.focus();
+  fallback.select();
+  teamSetStorageStatus('Cópia automática indisponível. O texto está selecionado; use Ctrl+C.');
+}
+
+async function teamSaveProfiles() {
+  if (!isAdmin || !teamProfilesLoaded || teamProfilesLoadError || teamSavingProfiles) return;
+  teamClearError();
+  const operations = [];
+  try {
+    teamPlayerNames().forEach(name => {
+      if (name.length > 120) throw new Error(`O nome de ${name.slice(0, 24)}... excede o limite permitido.`);
+      const profile = teamProfileFor(name);
+      const rawRating = String(profile.rating ?? '').trim();
+      const rating = rawRating ? Number(rawRating) : null;
+      if (rawRating && (!Number.isInteger(rating) || rating < 1 || rating > 10)) {
+        throw new Error(`A nota de ${name} deve ser um número inteiro de 1 a 10 ou ficar em branco.`);
+      }
+      operations.push({
+        type: 'set',
+        ref: playerProfilesCol.doc(teamProfileDocId(name)),
+        data: {
+          name,
+          manuallyAdded: teamAdditionalPlayers.includes(name) && !teamIsHistorical(name),
+          rating,
+          positions: TEAM_POSITIONS.filter(position => profile.positions.includes(position)),
+        },
+      });
+    });
+    teamProfilesToDelete.forEach(name => operations.push({ type: 'delete', ref: playerProfilesCol.doc(teamProfileDocId(name)) }));
+  } catch (error) {
+    teamShowError(error.message);
+    return;
+  }
+
+  teamSavingProfiles = true;
+  teamUpdateActionButtons();
+  teamSetStorageStatus('Salvando perfis compartilhados...');
+  try {
+    for (let start = 0; start < operations.length; start += 450) {
+      const batch = db.batch();
+      operations.slice(start, start + 450).forEach(operation => {
+        if (operation.type === 'delete') batch.delete(operation.ref);
+        else batch.set(operation.ref, operation.data);
+      });
+      await batch.commit();
+    }
+    teamProfileDirtyNames.clear();
+    teamProfilesToDelete.clear();
+    teamSetStorageStatus('Perfis salvos no Firestore. Eles estarão disponíveis após o login em outros computadores.');
+  } catch (error) {
+    teamShowError(firestoreErrorMessage(error));
+    teamSetStorageStatus('Não foi possível salvar os perfis. Revise o login e as regras do Firestore.');
+  } finally {
+    teamSavingProfiles = false;
+    teamUpdateActionButtons();
+  }
+}
+
+async function teamSavePlan() {
+  if (!isAdmin || !teamCurrentSplit || !teamCurrentSplitValid || teamSavingPlan || !teamPlansLoaded) return;
+  teamClearError();
+  const teams = teamCurrentSplit.teams.map(team => teamNormalizeSavedPlayers(team));
+  if (teams.some(team => !team.length)) {
+    teamShowError('Gere ou carregue times válidos antes de salvar.');
+    return;
+  }
+  teamSavingPlan = true;
+  teamUpdateActionButtons();
+  teamSetStorageStatus('Salvando plano de times...');
+  try {
+    await teamPlansCol.add({
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      createdAtIso: new Date().toISOString(),
+      teamA: teams[0],
+      teamB: teams[1],
+    });
+    teamSetStorageStatus('Plano salvo no Firestore e disponível em outros computadores.');
+  } catch (error) {
+    teamShowError(firestoreErrorMessage(error));
+    teamSetStorageStatus('Não foi possível salvar o plano. Revise o login e as regras do Firestore.');
+  } finally {
+    teamSavingPlan = false;
+    teamUpdateActionButtons();
+  }
+}
+
+function initializeTeamBuilder() {
+  document.getElementById('teamAddPlayerBtn').addEventListener('click', teamAddPlayer);
+  document.getElementById('teamRemovePlayerBtn').addEventListener('click', teamRemoveSelectedPlayer);
+  document.getElementById('teamNewPlayerInput').addEventListener('keydown', event => {
+    if (event.key === 'Enter') teamAddPlayer();
+  });
+  document.getElementById('teamSelectAllBtn').addEventListener('click', () => teamSetAllAttendance(true));
+  document.getElementById('teamClearAllBtn').addEventListener('click', () => teamSetAllAttendance(false));
+  document.getElementById('teamGenerateBtn').addEventListener('click', teamGenerate);
+  document.getElementById('teamSwapBtn').addEventListener('click', teamSwapSelected);
+  document.getElementById('teamCopyBtn').addEventListener('click', teamCopy);
+  document.getElementById('teamSaveProfilesBtn').addEventListener('click', teamSaveProfiles);
+  document.getElementById('teamSavePlanBtn').addEventListener('click', teamSavePlan);
+  teamUpdateActionButtons();
+}
+
+initializeTeamBuilder();
+auth.onAuthStateChanged(handleAuthStateChanged, error => {
+  console.error('Firebase Authentication state error:', error);
+  const wasAdmin = isAdmin;
+  isAdmin = false;
+  currentAdminUser = null;
+  updateAdminUi();
+  if (wasAdmin) clearTeamPrivateData();
+  showLoginError('Não foi possível verificar o login. Verifique a conexão e tente novamente.');
+});
+
 // ── Tabs ──────────────────────────────────────────────────────────
 function showTab(name, btn) {
+  if ((name === 'times' || name === 'nova') && !isAdmin) {
+    showTab('historico', document.getElementById('tabHistorico'));
+    return;
+  }
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
   if (name === 'historico') renderHistorico();
   if (name === 'geral')     renderGeral();
+  if (name === 'times')     renderTeamBuilder();
 }
 
 function updateHistoricoBadge() {
@@ -763,6 +1846,7 @@ function lastSaturday() {
 }
 
 function showSaveForm() {
+  if (!isAdmin) return;
   saveDatePicker.setDate(new Date(), false);
   document.getElementById('saveLabel').value     = '';
   document.getElementById('saveVideoUrl1').value = '';
@@ -773,142 +1857,188 @@ function showSaveForm() {
 
 function hideSaveForm() { document.getElementById('saveForm').style.display = 'none'; }
 
-function confirmSave() {
-  if (!currentData) return;
-  const dateVal  = document.getElementById('saveDate').value;
+async function confirmSave() {
+  if (!currentData || isSavingMatch) return;
+  if (!isAdmin) { showAlert('novaError', 'Entre como administrador para salvar jogos.'); return; }
+  const dateVal = document.getElementById('saveDate').value;
   const labelVal = document.getElementById('saveLabel').value.trim();
-  const url1 = document.getElementById('saveVideoUrl1').value.trim();
-  const url2 = document.getElementById('saveVideoUrl2').value.trim();
-  const videoUrls = [url1, url2].filter(Boolean);
+  const rawUrls = [document.getElementById('saveVideoUrl1').value.trim(), document.getElementById('saveVideoUrl2').value.trim()].filter(Boolean);
   if (!dateVal) { showAlert('novaError', 'Selecione a data do jogo.'); return; }
+  if (labelVal.length > 120) { showAlert('novaError', 'O título deve ter no máximo 120 caracteres.'); return; }
+  const videoUrls = rawUrls.map(normalizeHttpsUrl);
+  if (videoUrls.some(url => !url)) {
+    showAlert('novaError', 'Use somente URLs válidas começando com https://.');
+    return;
+  }
   const [d, mo, y] = dateVal.split('/');
   const isoDate = `${y}-${mo}-${d}`;
   const dateObj = new Date(`${isoDate}T12:00:00`);
+  if (Number.isNaN(dateObj.getTime())) { showAlert('novaError', 'A data informada é inválida.'); return; }
   const rawFormatted = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
   const formatted = rawFormatted.charAt(0).toUpperCase() + rawFormatted.slice(1);
-  addMatch({
-    id: Date.now().toString(), date: isoDate,
-    label: labelVal || formatted, formatted,
-    log: currentData.log, totalGoals: currentData.totalGoals,
-    totalAssists: currentData.totalAssists, players: currentData.players, ownGoals: currentData.ownGoals,
-    videoUrls,
-  });
-  hideSaveForm();
-  showAlert('novaSuccess', '✅ Jogo salvo com sucesso!');
-  setTimeout(() => hideAlert('novaSuccess'), 4000);
+  isSavingMatch = true;
+  try {
+    await addMatch({
+      id: Date.now().toString(), date: isoDate,
+      label: labelVal || formatted, formatted,
+      log: currentData.log, totalGoals: currentData.totalGoals,
+      totalAssists: currentData.totalAssists, players: currentData.players, ownGoals: currentData.ownGoals,
+      videoUrls,
+    });
+    hideSaveForm();
+    hideAlert('novaError');
+    showAlert('novaSuccess', '✅ Jogo salvo com sucesso!');
+    setTimeout(() => hideAlert('novaSuccess'), 4000);
+  } catch (error) {
+    showAlert('novaError', error && error.code ? firestoreErrorMessage(error) : (error.message || firestoreErrorMessage(error)));
+  } finally {
+    isSavingMatch = false;
+  }
 }
 
 // ── Histórico Jogos ───────────────────────────────────────────────
 function renderHistorico() {
   const matches = loadMatches().slice();
   const el = document.getElementById('historicoContent');
-  if (matches.length === 0) {
+  if (!matches.length) {
     el.innerHTML = `<div class="history-empty"><div class="big">📋</div><p>Nenhum jogo salvo ainda.${isAdmin ? '<br>Calcule os rankings e clique em <strong>Salvar Jogo</strong>.' : ''}</p></div>`;
     return;
   }
   el.innerHTML = matches.map(matchCard).join('');
+  el.onclick = handleMatchAction;
+}
+
+function matchDomKey(id) {
+  return Array.from(String(id), character => character.codePointAt(0).toString(16)).join('_') || 'empty';
 }
 
 function matchCard(m) {
-  const sorted = sortPlayers(m.players);
-  const grids  = rankCard('⚽', 'Artilharia',           sorted.byGoals,         p => p.goals,         'bar-goals')
-               + rankCard('🎯', 'Assistências',         sorted.byAssists,       p => p.assists,       'bar-assists')
-               + rankCard('🏆', 'Participação em Gols', sorted.byParticipation, p => p.participation, 'bar-participation', p => `${p.goals}G+${p.assists}A`);
-  const videoUrls = m.videoUrls !== undefined ? m.videoUrls : (m.videoUrl ? [m.videoUrl] : []);
-  const videoBtn = videoUrls.map((url, i) => {
+  const id = String(m.id);
+  const key = matchDomKey(id);
+  const players = Array.isArray(m.players) ? m.players : [];
+  const sorted = sortPlayers(players);
+  const grids = rankCard('⚽', 'Artilharia', sorted.byGoals, p => p.goals, 'bar-goals')
+    + rankCard('🎯', 'Assistências', sorted.byAssists, p => p.assists, 'bar-assists')
+    + rankCard('🏆', 'Participação em Gols', sorted.byParticipation, p => p.participation, 'bar-participation', p => `${p.goals}G+${p.assists}A`);
+  const videoUrls = Array.isArray(m.videoUrls) ? m.videoUrls.filter(url => typeof url === 'string') : [];
+  const videoButtons = videoUrls.map((url, index) => {
     const embedUrl = getGoogleDriveEmbedUrl(url);
-    const label = videoUrls.length > 1 ? `▶ Parte ${i + 1}` : '▶ Assistir jogo';
-    return embedUrl
-      ? `<button class="btn-green" style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','video-${i}')">${label}</button>`
-      : `<a class="btn btn-green" href="${escHtml(url)}" target="_blank" rel="noopener" style="padding:7px 12px;font-size:0.82rem;text-decoration:none;border-radius:8px;font-weight:600;display:inline-flex;align-items:center;gap:6px">${label}</a>`;
+    const safeUrl = normalizeHttpsUrl(url);
+    const label = videoUrls.length > 1 ? `▶ Parte ${index + 1}` : '▶ Assistir jogo';
+    if (embedUrl) return `<button type="button" class="btn-green" style="padding:7px 12px;font-size:0.82rem" data-match-action="toggle-section" data-match-id="${escHtml(id)}" data-section="video-${index}">${label}</button>`;
+    if (safeUrl) return `<a class="btn btn-green" href="${escHtml(safeUrl)}" target="_blank" rel="noopener noreferrer" style="padding:7px 12px;font-size:0.82rem;text-decoration:none;border-radius:8px;font-weight:600;display:inline-flex;align-items:center;gap:6px">${label}</a>`;
+    return '';
   }).join('');
   const deleteBtn = isAdmin
-    ? `<button class="btn-danger" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" onclick="deleteMatchById('${m.id}')">🗑</button>`
+    ? `<button type="button" class="btn-danger" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" data-match-action="delete" data-match-id="${escHtml(id)}" aria-label="Excluir jogo">🗑</button>`
     : '';
   const editBtn = isAdmin
-    ? `<button class="btn-blue-light" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" onclick="toggleEditForm('${m.id}')">✏️</button>`
+    ? `<button type="button" class="btn-blue-light" style="padding:0;font-size:0.82rem;height:32px;width:36px;justify-content:center" data-match-action="toggle-edit" data-match-id="${escHtml(id)}" aria-label="Editar jogo">✏️</button>`
     : '';
-  const logLines = (m.log || '').split('\n').map(l => escHtml(l)).join('\n');
+  const logLines = m.log.split('\n').map(line => escHtml(line)).join('\n');
+  const label = escHtml(m.label || m.formatted || 'Jogo');
+  const ownGoals = m.ownGoals.length ? `<p class="own-goal-notice" style="margin-top:10px">Gols contra ignorados: ${escHtml(m.ownGoals.join(', '))}</p>` : '';
+  const editForm = isAdmin ? `
+      <div class="match-edit-form" id="editForm-${key}">
+        <div><label for="editLabel-${key}">Título</label><input type="text" id="editLabel-${key}" maxlength="120" value="${label}"></div>
+        <div><label for="editUrl1-${key}">URL Parte 1</label><input type="url" id="editUrl1-${key}" value="${escHtml(videoUrls[0] || '')}"></div>
+        <div><label for="editUrl2-${key}">URL Parte 2</label><input type="url" id="editUrl2-${key}" value="${escHtml(videoUrls[1] || '')}"></div>
+        <p id="editError-${key}" class="login-error" role="alert"></p>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button type="button" class="btn-green" style="padding:7px 14px;font-size:0.85rem" data-match-action="save-edit" data-match-id="${escHtml(id)}">✅ Salvar</button>
+          <button type="button" class="btn-secondary" style="padding:7px 14px;font-size:0.85rem" data-match-action="toggle-edit" data-match-id="${escHtml(id)}">Cancelar</button>
+        </div>
+      </div>` : '';
+  const videoSections = videoUrls.map((url, index) => {
+    const embedUrl = getGoogleDriveEmbedUrl(url);
+    return embedUrl ? `<div class="match-section" id="video-${index}-${key}"><div class="video-wrapper"><iframe src="${escHtml(embedUrl)}" allowfullscreen allow="autoplay" title="Vídeo do jogo"></iframe></div></div>` : '';
+  }).join('');
+
   return `
-    <div class="match-card" id="match-${m.id}">
+    <div class="match-card" id="match-${key}">
       <div class="match-card-header">
         <div class="match-card-top">
-          <div class="match-date">${escHtml(m.label)}</div>
+          <div class="match-date">${label}</div>
           <div class="match-meta">
             <span class="meta-chip">⚽ <strong>${m.totalGoals}</strong> gols</span>
             <span class="meta-chip">🎯 <strong>${m.totalAssists}</strong> assistências</span>
-            <span class="meta-chip">👥 <strong>${m.players.length}</strong> jogadores</span>
+            <span class="meta-chip">👥 <strong>${players.length}</strong> jogadores</span>
           </div>
         </div>
         <div class="match-actions">
-          ${videoBtn}
-          <button class="btn-yellow" style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','highlights')">📋 Destaques</button>
-          <button class="btn-purple" style="padding:7px 12px;font-size:0.82rem" onclick="toggleMatchSection('${m.id}','rankings')">▼ Rankings</button>
+          ${videoButtons}
+          <button type="button" class="btn-yellow" style="padding:7px 12px;font-size:0.82rem" data-match-action="toggle-section" data-match-id="${escHtml(id)}" data-section="highlights">📋 Destaques</button>
+          <button type="button" class="btn-purple" style="padding:7px 12px;font-size:0.82rem" data-match-action="toggle-section" data-match-id="${escHtml(id)}" data-section="rankings">▼ Rankings</button>
           <div style="display:flex;gap:8px;margin-left:auto">
-            <button class="btn-secondary" style="padding:7px 12px;font-size:0.82rem" onclick="exportMatch('${m.id}')">📥 Excel</button>
+            <button type="button" class="btn-secondary" style="padding:7px 12px;font-size:0.82rem" data-match-action="export" data-match-id="${escHtml(id)}">📥 Excel</button>
             ${editBtn}${deleteBtn}
           </div>
         </div>
       </div>
-      <div class="match-section" id="rankings-${m.id}">
-        <div class="rankings-grid">${grids}</div>
-        ${m.ownGoals && m.ownGoals.length > 0 ? `<p class="own-goal-notice" style="margin-top:10px">Gols contra ignorados: ${escHtml(m.ownGoals.join(', '))}</p>` : ''}
-      </div>
-      <div class="match-section" id="highlights-${m.id}">
-        <div class="highlights-header">📋 Destaques do jogo</div>
-        <pre class="log-display">${logLines}</pre>
-      </div>
-      ${videoUrls.map((url, i) => { const e = getGoogleDriveEmbedUrl(url); return e ? `<div class="match-section" id="video-${i}-${m.id}"><div class="video-wrapper"><iframe src="${e}" allowfullscreen allow="autoplay"></iframe></div></div>` : ''; }).join('')}
-      <div class="match-edit-form" id="editForm-${m.id}">
-        <div>
-          <label>Título</label>
-          <input type="text" id="editLabel-${m.id}" value="${escHtml(m.label)}">
-        </div>
-        <div>
-          <label>URL Parte 1</label>
-          <input type="url" id="editUrl1-${m.id}" value="${escHtml(videoUrls[0] || '')}">
-        </div>
-        <div>
-          <label>URL Parte 2</label>
-          <input type="url" id="editUrl2-${m.id}" value="${escHtml(videoUrls[1] || '')}">
-        </div>
-        <div style="display:flex;gap:8px;margin-top:4px">
-          <button class="btn-green" style="padding:7px 14px;font-size:0.85rem" onclick="confirmEdit('${m.id}')">✅ Salvar</button>
-          <button class="btn-secondary" style="padding:7px 14px;font-size:0.85rem" onclick="toggleEditForm('${m.id}')">Cancelar</button>
-        </div>
-      </div>
+      <div class="match-section" id="rankings-${key}"><div class="rankings-grid">${grids}</div>${ownGoals}</div>
+      <div class="match-section" id="highlights-${key}"><div class="highlights-header">📋 Destaques do jogo</div><pre class="log-display">${logLines}</pre></div>
+      ${videoSections}
+      ${editForm}
     </div>`;
 }
 
+function handleMatchAction(event) {
+  const target = event.target instanceof Element ? event.target : event.target.parentElement;
+  const button = target?.closest('[data-match-action]');
+  if (!button) return;
+  const id = button.dataset.matchId;
+  const action = button.dataset.matchAction;
+  if (!id) return;
+  if (action === 'toggle-section') toggleMatchSection(id, button.dataset.section);
+  else if (action === 'toggle-edit') toggleEditForm(id);
+  else if (action === 'save-edit') confirmEdit(id);
+  else if (action === 'delete') deleteMatchById(id);
+  else if (action === 'export') exportMatch(id);
+}
+
 function toggleMatchSection(id, section) {
-  const el = document.getElementById(section + '-' + id);
-  const isOpening = !el.classList.contains('open');
+  const key = matchDomKey(id);
+  if (!['rankings', 'highlights'].includes(section) && !/^video-\d+$/.test(section || '')) return;
+  const element = document.getElementById(`${section}-${key}`);
+  if (!element) return;
+  const isOpening = !element.classList.contains('open');
   if (section.startsWith('video-') && isOpening) {
-    document.querySelectorAll('[id^="video-"]').forEach(v => v.classList.remove('open'));
+    document.querySelectorAll('.match-section[id^="video-"]').forEach(video => video.classList.remove('open'));
   }
-  el.classList.toggle('open');
+  element.classList.toggle('open');
 }
 
 function toggleEditForm(id) {
-  document.getElementById('editForm-' + id).classList.toggle('open');
+  if (!isAdmin) return;
+  document.getElementById(`editForm-${matchDomKey(id)}`)?.classList.toggle('open');
 }
 
-function confirmEdit(id) {
-  const label = document.getElementById('editLabel-' + id).value.trim();
-  const url1  = document.getElementById('editUrl1-'  + id).value.trim();
-  const url2  = document.getElementById('editUrl2-'  + id).value.trim();
-  if (!label) return;
-  const videoUrls = [url1, url2].filter(Boolean);
-  matchesCol.doc(id).update({ label, videoUrls });
-  toggleEditForm(id);
+async function confirmEdit(id) {
+  if (!isAdmin) return;
+  const key = matchDomKey(id);
+  const label = document.getElementById(`editLabel-${key}`)?.value.trim();
+  const rawUrls = [document.getElementById(`editUrl1-${key}`)?.value.trim(), document.getElementById(`editUrl2-${key}`)?.value.trim()].filter(Boolean);
+  const error = document.getElementById(`editError-${key}`);
+  if (!label) { error.textContent = 'Informe um título para o jogo.'; error.style.display = 'block'; return; }
+  if (label.length > 120) { error.textContent = 'O título deve ter no máximo 120 caracteres.'; error.style.display = 'block'; return; }
+  const videoUrls = rawUrls.map(normalizeHttpsUrl);
+  if (videoUrls.some(url => !url)) { error.textContent = 'Use somente URLs válidas começando com https://.'; error.style.display = 'block'; return; }
+  try {
+    await matchesCol.doc(id).update({ label, videoUrls });
+    toggleEditForm(id);
+  } catch (failure) {
+    error.textContent = firestoreErrorMessage(failure);
+    error.style.display = 'block';
+  }
 }
 
-function deleteMatchById(id) {
-  if (!confirm('Excluir este jogo?')) return;
-  removeMatch(id);
-  document.getElementById('match-' + id)?.remove();
-  if (!document.querySelector('.match-card')) renderHistorico();
-  if (document.getElementById('tab-geral').classList.contains('active')) renderGeral();
+async function deleteMatchById(id) {
+  if (!isAdmin || !confirm('Excluir este jogo?')) return;
+  try {
+    await removeMatch(id);
+  } catch (error) {
+    alert(firestoreErrorMessage(error));
+  }
 }
 
 // ── Ranking Geral ─────────────────────────────────────────────────
@@ -961,7 +2091,9 @@ function rankCard(icon, title, sorted, valueFn, barClass, subFn) {
   const max = sorted[0] ? valueFn(sorted[0]) : 1;
   const rows = sorted.map((p, i) => {
     const val = valueFn(p);
-    const pct = max > 0 ? (val / max) * 100 : 0;
+    const rawPct = max > 0 ? (val / max) * 100 : 0;
+    const pct = Number.isFinite(rawPct) ? Math.max(0, Math.min(100, rawPct)) : 0;
+    const subtitle = subFn ? escHtml(subFn(p)) : '';
     const pos = i < 3
       ? `<span class="rank-pos ${medalClass[i]}">${medals[i]}</span>`
       : `<span class="rank-pos">${i + 1}</span>`;
@@ -969,7 +2101,7 @@ function rankCard(icon, title, sorted, valueFn, barClass, subFn) {
       ${pos}
       <span class="rank-name">${escHtml(p.name)}</span>
       <div class="rank-bar-wrap"><div class="rank-bar ${barClass}" style="width:${pct.toFixed(1)}%"></div></div>
-      <span class="rank-count" title="${subFn ? subFn(p) : ''}">${val}</span>
+      <span class="rank-count" title="${subtitle}">${escHtml(val)}</span>
     </div>`;
   }).join('');
   return `<div class="rank-card">
@@ -1101,17 +2233,37 @@ async function buildExcel({ title, subtitle, players, totalGoals, totalAssists, 
 }
 
 // ── Google Drive embed helper ─────────────────────────────────────
-function getGoogleDriveEmbedUrl(url) {
-  if (!url) return null;
-  const m1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if (m1) return `https://drive.google.com/file/d/${m1[1]}/preview`;
-  const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (m2) return `https://drive.google.com/file/d/${m2[1]}/preview`;
-  return null;
+function normalizeHttpsUrl(value) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  try {
+    const parsed = new URL(value.trim());
+    if (parsed.protocol !== 'https:' || !parsed.hostname || parsed.username || parsed.password) return null;
+    return parsed.href;
+  } catch (error) {
+    return null;
+  }
+}
+
+function getGoogleDriveEmbedUrl(value) {
+  const safeUrl = normalizeHttpsUrl(value);
+  if (!safeUrl) return null;
+  try {
+    const parsed = new URL(safeUrl);
+    if (parsed.hostname.toLowerCase() !== 'drive.google.com') return null;
+    const pathMatch = parsed.pathname.match(/^\/file\/d\/([a-zA-Z0-9_-]+)/);
+    const fileId = pathMatch ? pathMatch[1] : parsed.searchParams.get('id');
+    if (!fileId || !/^[a-zA-Z0-9_-]+$/.test(fileId)) return null;
+    return `https://drive.google.com/file/d/${fileId}/preview`;
+  } catch (error) {
+    return null;
+  }
 }
 
 // ── Utilities ─────────────────────────────────────────────────────
-function escHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escHtml(value) {
+  const entities = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  return String(value ?? '').replace(/[&<>"']/g, character => entities[character]);
+}
 function showAlert(id,msg) { const e=document.getElementById(id); e.textContent=msg; e.style.display='block'; }
 function hideAlert(id) { document.getElementById(id).style.display='none'; }
 
